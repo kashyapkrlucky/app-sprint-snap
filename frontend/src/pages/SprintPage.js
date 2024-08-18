@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SprintList from '../components/Sprint/SprintList';
 import CreateSprint from '../components/Sprint/CreateSprint';
+import Layout from '../components/Layout';
 
 const SprintPage = () => {
     const [sprints, setSprints] = useState([]);
@@ -55,10 +56,10 @@ const SprintPage = () => {
     };
 
     return (
-        <div className="container mx-auto py-8">
+        <Layout>
             <CreateSprint onSubmit={handleCreateSprint} projects={projects} />
             <SprintList sprints={sprints} />
-        </div>
+        </Layout>
     );
 };
 

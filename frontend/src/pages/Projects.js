@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import CreateProject from '../components/Projects/CreateProject';
 import ProjectList from '../components/Projects/ProjectList';
+import Layout from '../components/Layout';
+import { GET_PROJECTS } from '../graphql/queries';
+import { useQuery } from '@apollo/client';
+import TopBar from '../components/Layout/TopBar';
 
 const ProjectPage = () => {
     const [projects, setProjects] = useState([]);
-
-    const handleCreateProject = (newProject) => {
-        setProjects([...projects, { ...newProject, id: projects.length + 1 }]);
-    };
 
     const handleEditProject = (updatedProject) => {
         setProjects(
@@ -21,15 +20,20 @@ const ProjectPage = () => {
         setProjects(projects.filter((project) => project.id !== projectId));
     };
 
+
+    const { loading, error, data } = useQuery(GET_PROJECTS);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error loading projects</p>;
     return (
-        <div className="container mx-auto py-8">
-            <CreateProject onSubmit={handleCreateProject} />
+        <main>
+            <TopBar/>
             <ProjectList
-                projects={projects}
+                projects={data?.projects}
                 onEdit={handleEditProject}
                 onDelete={handleDeleteProject}
             />
-        </div>
+        </main>
     );
 };
 

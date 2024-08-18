@@ -112,7 +112,7 @@ const typeDefs = gql`
     createTask(title: String!, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
     updateTask(id: ID!, title: String, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
     deleteTask(id: ID!): Task
-    moveTask(taskId: ID!, newStatus: String!): Task!
+    moveTask(boardId: ID!, taskId: ID!, fromColumn: String!, toColumn: String!): Board!
     
     createProject(name: String!, description: String, startDate: String, endDate: String, status: String): Project
     updateProject(id: ID!, name: String, description: String, startDate: String, endDate: String, status: String): Project
@@ -130,7 +130,6 @@ const typeDefs = gql`
 
     createBoard(name: String!, projectId: ID!): Board!
     updateBoard(boardId: ID!, name: String): Board!
-    moveTask(boardId: ID!, taskId: ID!, fromColumn: String!, toColumn: String!): Board!
     deleteBoard(boardId: ID!): Boolean!
     
   }

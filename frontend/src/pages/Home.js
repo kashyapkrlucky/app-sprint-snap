@@ -17,7 +17,6 @@ const HomePage = () => {
     const [projects, setProjects] = useState([]);
     const [team, setTeam] = useState([]);
 
-    const currentProject = 'SprintSnap Project';
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,20 +38,17 @@ const HomePage = () => {
 
     return (
         <Layout>
-            <div className='flex flex-col gap-4'>
-                <TopBar currentProject={currentProject} user={user} />
-                <div className='w-full px-4 flex flex-col gap-4'>
-                    <Banner user={user} />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                        <div>
-                            <TaskList tasks={tasks} />
-                        </div>
-                        <div>
-                            <ProjectList projects={projects} />
-                        </div>
-                        <div>
-                            <Team team={team} />
-                        </div>
+            <div className='flex flex-col gap-4 w-full px-4 flex flex-col gap-4'>
+                <Banner user={user} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                    <div>
+                        <TaskList tasks={tasks} />
+                    </div>
+                    <div>
+                        <ProjectList projects={projects} />
+                    </div>
+                    <div>
+                        <Team team={team} />
                     </div>
                 </div>
             </div>

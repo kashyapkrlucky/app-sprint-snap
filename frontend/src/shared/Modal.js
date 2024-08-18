@@ -1,37 +1,55 @@
-// components/Modal.js
-import React from 'react';
-import { Fragment } from 'react';
-import { Transition, Dialog } from '@headlessui/react';
+// src/components/Modal.js
+import { XCircleIcon } from '@heroicons/react/24/outline';
+import React, { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 
-const Modal = ({ isOpen, closeModal, title, children }) => {
+const Portal = ({ children }) => {
+    const portalRoot = document.getElementById('modal-root');
+    return ReactDOM.createPortal(children, portalRoot);
+};
+
+// eslint-disable-next-line react/prop-types
+const Modal = ({ title, isOpen, onClose, children }) => {
+    const modalRef = useRef();
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (event.keyCode === 27) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('click', handleOutsideClick);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, [isOpen, onClose]);
+
+    if (!isOpen) return null;
+
     return (
-        <Transition show={isOpen} as={Fragment}>
-            <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={closeModal}>
-                <div className="flex items-center justify-center min-h-screen px-4">
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0 scale-95"
-                        enterTo="opacity-100 scale-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100 scale-100"
-                        leaveTo="opacity-0 scale-95"
-                    >
-                        <Dialog.Panel className="max-w-lg w-full bg-white rounded-lg shadow-lg p-6">
-                            <Dialog.Title className="text-lg font-semibold">{title}</Dialog.Title>
-                            <div className="mt-4">
-                                {children}
-                            </div>
-                            <div className="mt-6 text-right">
-                                <button onClick={closeModal} className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
-                                    Close
-                                </button>
-                            </div>
-                        </Dialog.Panel>
-                    </Transition.Child>
+        <Portal>
+            <div className="modal-overlay fixed top-0 left-0 bottom-0 right-0 flex flex-row justify-center items-center">
+                <div className="modal-content bg-white p-4 rounded-xl my-4 lg:w-1/2" ref={modalRef}>
+                    <header className='w-full flex flex-row justify-between items-center border-b pb-4'>
+                        <p className='text-lg font-semibold text-gray-500'>{title}</p>
+                        <button
+                            type="button"
+                            onClick={() => onClose(false)}
+                            className="inline-flex justify-center rounded-md bg-transparent "
+                        >
+                            <XCircleIcon className='w-10 h-10 text-gray-500 hover:text-gray-700' />
+                        </button>
+                    </header>
+                    <section className='mt-4  h-auto overflow-y-scroll' style={{ maxHeight: '580px' }}>
+                        {children}
+                    </section>
                 </div>
-            </Dialog>
-        </Transition>
+            </div>
+        </Portal>
     );
 };
 

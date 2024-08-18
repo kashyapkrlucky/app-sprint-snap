@@ -1,33 +1,24 @@
-import React, { useContext, useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import React, { useContext, useEffect, useState } from 'react';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { SettingsContext } from '../contexts/SettingsContext';
-
-const SIGNIN_MUTATION = gql`
-  mutation SignIn($email: String!, $password: String!) {
-    signIn(email: $email, password: $password) {
-      token
-      user {
-        id
-        email
-        fullName
-        avatar
-      }
-      profile {
-        notifications
-        theme
-      }
-    }
-  }
-`;
+import { SIGNIN_MUTATION } from '../graphql/mutations';
 
 const SignIn = () => {
-    const { login } = useContext(AuthContext);
+    const { user, login } = useContext(AuthContext);
     const { saveSettings } = useContext(SettingsContext);
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard");
+        }
+    }, [user, navigate])
+
+
     const [signin, { loading, error }] = useMutation(SIGNIN_MUTATION, {
         onCompleted: (data) => {
             const { token, user, profile } = data.signIn;
@@ -87,7 +78,7 @@ const SignIn = () => {
 
                 <p className="text-center mt-4">
                     Don't have an account?{' '}
-                    <a href="/signup" className="text-blue-500 hover:underline">
+                    <a href="/sign-up" className="text-blue-500 hover:underline">
                         Sign Up
                     </a>
                 </p>

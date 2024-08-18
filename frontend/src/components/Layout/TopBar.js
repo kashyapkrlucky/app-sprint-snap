@@ -1,14 +1,29 @@
 // components/Topbar.js
-import React from 'react';
+import React, { useContext } from 'react';
+import ProjectDropdown from '../Projects/ProjectDropdown';
+import { useAppSelection } from '../../contexts/AppSelectionContext';
+import { NavLink } from 'react-router-dom';
 
-const TopBar = ({ currentProject, user }) => {
+import { Cog6ToothIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import Avatar from '../../shared/Avatar';
+import { AuthContext } from '../../contexts/AuthContext';
+
+const TopBar = () => {
+    const { user, logout } = useContext(AuthContext);
+    const navigation = [
+        { name: 'My Profile', href: `/profile/${user && user.id}`, icon: <UserCircleIcon className='w-6 h-6' /> },
+        { name: 'Settings', href: '/settings', icon: <Cog6ToothIcon className='w-6 h-6' /> }
+    ];
+
+    const onLogout = () => {
+        localStorage.clear();
+        logout();
+    }
     return (
         <div className="bg-white shadow-md flex justify-between items-center px-6 py-3 h-16">
-            {/* Project Name */}
-            <div className="flex items-center space-x-4">
-                <h1 className="text-2xl font-bold text-gray-800">{currentProject}</h1>
-            </div>
-
+            
+            <ProjectDropdown />
             {/* Search Bar */}
             <div className="relative w-1/3">
                 <input
@@ -29,58 +44,41 @@ const TopBar = ({ currentProject, user }) => {
             </div>
 
             {/* User Info & Action Menu */}
-            <div className="flex items-center space-x-4">
-                {/* User Info */}
-                <div className="flex items-center space-x-2">
-                    <img
-                        src={user.avatarUrl}
-                        alt={user.fullName}
-                        className="w-10 h-10 rounded-full"
-                    />
-                    <span className="text-gray-800 font-medium">{user.fullName}</span>
-                </div>
+            {
+                user ? <>
 
-                {/* Action Menu */}
-                <div className="relative">
-                    <button className="text-gray-800 focus:outline-none">
-                        <svg
-                            className="w-6 h-6"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
+                    <Menu as="div" className="relative ml-3">
+                        <div>
+                            <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                <span className="absolute -inset-1.5" />
+                                <span className="sr-only">Open user menu</span>
+                                <div className='bg-white rounded-full'>{user && <Avatar imageUrl={user?.avatar} name={user?.fullName} size="md" />}</div>
+                            </MenuButton>
+                        </div>
+                        <MenuItems
+                            transition
+                            className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 6v6m0 6h0"
-                            ></path>
-                        </svg>
-                    </button>
-                    {/* Dropdown for actions like Logout */}
-                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-2 hidden">
-                        <a
-                            href="/profile"
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        >
-                            Profile
-                        </a>
-                        <a
-                            href="/settings"
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        >
-                            Settings
-                        </a>
-                        <a
-                            href="/logout"
-                            className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        >
-                            Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
+                            {navigation.map((item) => (
+                                <MenuItem key={item.name}>
+                                    <a
+                                        href={item.href}
+                                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+                                    >
+                                        {item.name}
+                                    </a>
+                                </MenuItem>
+                            ))}
+                            <MenuItem>
+                                <button className='w-full text-sm px-4 py-2 text-left' onClick={onLogout}>Logout</button>
+                            </MenuItem>
+                        </MenuItems>
+                    </Menu>
+                </> : <>
+                    <NavLink to="/signin" className={'text-gray-300'}>Sign In</NavLink>
+                    <NavLink to="/signup" className={'text-gray-300'}>Join Now</NavLink>
+                </>
+            }
         </div>
     );
 };

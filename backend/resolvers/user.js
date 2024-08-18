@@ -45,15 +45,15 @@ const userResolvers = {
             await user.save();
 
             // Create a profile for the new user
-            const profile = new Profile({
+            const profileData = new Profile({
                 user: user._id
             });
 
-            await profile.save();
+            const profile = await profileData.save();
 
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '23h' });
 
-            return { token, user };
+            return { token, user, profile };
         },
         signIn: async (_, { email, password }) => {
             const user = await User.findOne({ email });

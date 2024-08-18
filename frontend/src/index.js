@@ -6,6 +6,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@ap
 import { setContext } from '@apollo/client/link/context';
 import { AuthProvider } from './contexts/AuthContext';
 import { SettingsProvider } from './contexts/SettingsContext';
+import { AppSelectionProvider } from './contexts/AppSelectionContext';
 
 // Create an HTTP link
 const httpLink = createHttpLink({
@@ -34,7 +35,9 @@ root.render(
     <ApolloProvider client={client}>
         <AuthProvider>
             <SettingsProvider>
-                <App />
+                <AppSelectionProvider>
+                    <App />
+                </AppSelectionProvider>
             </SettingsProvider>
         </AuthProvider>
     </ApolloProvider>

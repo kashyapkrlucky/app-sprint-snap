@@ -1,31 +1,24 @@
-import React, { useContext, useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import React, { useContext, useEffect, useState } from 'react';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { SettingsContext } from '../contexts/SettingsContext';
-
-const SIGNUP_MUTATION = gql`
-  mutation SignUp($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
-    signUp(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
-      token
-      user {
-        id
-        email
-        fullName
-        avatar
-      }
-    }
-  }
-`;
+import { SIGNUP_MUTATION } from '../graphql/mutations';
 
 const SignUp = () => {
-    const { login } = useContext(AuthContext);
+    const { user, login } = useContext(AuthContext);
     const { saveSettings } = useContext(SettingsContext);
     const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard");
+        }
+    }, [user, navigate])
 
     const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION, {
         onCompleted: (data) => {
@@ -111,7 +104,7 @@ const SignUp = () => {
 
                 <p className="text-center mt-4">
                     Already have an account?{' '}
-                    <a href="/signin" className="text-blue-500 hover:underline">
+                    <a href="/sign-in" className="text-blue-500 hover:underline">
                         Sign In
                     </a>
                 </p>

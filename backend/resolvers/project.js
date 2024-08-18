@@ -1,11 +1,13 @@
 const Project = require('../models/Project');
-const User = require('../models/User');
+const Board = require('../models/Board');
 const Task = require('../models/Task');
 const Notification = require('../models/Notification');
 
 const projectResolver = {
     Query: {
-        projects: () => Project.find().populate('members').populate('tasks').populate('notifications'),
+        projects: async () => {
+            return await Project.find().populate('members');
+        },
         project: (parent, { id }) => Project.findById(id).populate('members').populate('tasks').populate('notifications'),
         tasks: () => Task.find().populate('assignee').populate('project').populate('comments').populate('notifications'),
         task: (parent, { id }) => Task.findById(id).populate('assignee').populate('project').populate('comments').populate('notifications'),
@@ -51,19 +53,21 @@ const projectResolver = {
         deleteTask: async (parent, { id }) => {
             return Task.findByIdAndDelete(id);
         },
-        moveTask: async (_, { taskId, newStatus }) => {
-            const task = await Task.findById(taskId).populate('dependencies');
+        moveTask: async (_, { boardId, taskId, fromColumn, toColumn }) => {
+            const board = await Board.findById(boardId);
 
-            // Check if all dependencies are done
-            const unmetDependencies = task.dependencies.filter(dep => dep.status !== 'done');
+            // Remove task from the current column
+            board.columns[fromColumn] = board.columns[fromColumn].filter(
+                (task) => task.toString() !== taskId
+            );
 
-            if (unmetDependencies?.length > 0) {
-                throw new Error('Task cannot be moved until dependencies are completed.');
-            }
+            // Add task to the new column
+            board.columns[toColumn].push(taskId);
 
-            task.status = newStatus;
-            await task.save();
-            return task;
+            await board.save();
+            return board.populate({
+                path: 'columns.toDo columns.inProgress columns.review columns.done',
+            });
         },
         createComment: async (parent, args) => {
             const comment = new Comment(args);
@@ -121,22 +125,6 @@ const projectResolver = {
         },
         updateBoard: async (_, { boardId, name }) => {
             return await Board.findByIdAndUpdate(boardId, { name }, { new: true });
-        },
-        moveTask: async (_, { boardId, taskId, fromColumn, toColumn }) => {
-            const board = await Board.findById(boardId);
-
-            // Remove task from the current column
-            board.columns[fromColumn] = board.columns[fromColumn].filter(
-                (task) => task.toString() !== taskId
-            );
-
-            // Add task to the new column
-            board.columns[toColumn].push(taskId);
-
-            await board.save();
-            return board.populate({
-                path: 'columns.toDo columns.inProgress columns.review columns.done',
-            });
         },
         deleteBoard: async (_, { boardId }) => {
             await Board.findByIdAndDelete(boardId);
