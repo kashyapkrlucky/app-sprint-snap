@@ -52,6 +52,47 @@ const typeDefs = gql`
     updatedAt: String
   }
 
+  type Task {
+    _id: ID!
+    title: String!
+    description: String
+    status: String!
+  }
+
+  type Sprint {
+    _id: ID!
+    name: String!
+    project: Project!
+    startDate: String!
+    endDate: String!
+    status: String!
+    tasks: [Task!]
+    createdAt: String!
+    updatedAt: String!
+  }
+
+
+  type Board {
+    _id: ID!
+    name: String!
+    project: Project!
+    columns: BoardColumns!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type BoardColumns {
+    toDo: [Task!]
+    inProgress: [Task!]
+    review: [Task!]
+    done: [Task!]
+  }
+
+  type BoardColumn {
+    name: String!
+    tasks: [Task!]
+  }
+
   type Query {
     projects: [Project]
     project(id: ID!): Project
@@ -61,12 +102,18 @@ const typeDefs = gql`
     comment(id: ID!): Comment
     notifications: [Notification]
     notification(id: ID!): Notification
+    getSprints(projectId: ID!): [Sprint!]
+    getSprint(sprintId: ID!): Sprint
+    getBoards(projectId: ID!): [Board!]
+    getBoard(boardId: ID!): Board
   }
 
   type Mutation {
     createTask(title: String!, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
     updateTask(id: ID!, title: String, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
     deleteTask(id: ID!): Task
+    moveTask(taskId: ID!, newStatus: String!): Task!
+    
     createProject(name: String!, description: String, startDate: String, endDate: String, status: String): Project
     updateProject(id: ID!, name: String, description: String, startDate: String, endDate: String, status: String): Project
     deleteProject(id: ID!): Project
@@ -76,6 +123,16 @@ const typeDefs = gql`
     createNotification(recipient: ID!, type: String!, message: String!, isRead: Boolean, relatedTask: ID, relatedProject: ID, createdBy: ID): Notification
     updateNotification(id: ID!, isRead: Boolean): Notification
     deleteNotification(id: ID!): Notification
+    
+    createSprint(name: String!, projectId: ID!, startDate: String!, endDate: String!): Sprint!
+    updateSprint(sprintId: ID!, name: String, status: String, startDate: String, endDate: String): Sprint!
+    deleteSprint(sprintId: ID!): Boolean!
+
+    createBoard(name: String!, projectId: ID!): Board!
+    updateBoard(boardId: ID!, name: String): Board!
+    moveTask(boardId: ID!, taskId: ID!, fromColumn: String!, toColumn: String!): Board!
+    deleteBoard(boardId: ID!): Boolean!
+    
   }
 `;
 
