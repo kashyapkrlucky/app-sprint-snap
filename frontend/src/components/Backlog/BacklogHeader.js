@@ -1,12 +1,13 @@
 import React from 'react';
 
-const BacklogHeader = () => {
+const BacklogHeader = ({ formAction }) => {
     return (
-        <div className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+        <div className="bg-white border py-4 px-6 flex justify-between items-center">
             <h1 className="text-2xl font-bold text-gray-700">Backlog</h1>
 
             {/* Search Bar */}
             <div className="flex items-center space-x-4">
+                <button className='bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700' onClick={() => formAction(true)}>Create Sprint</button>
                 <input
                     type="text"
                     placeholder="Search tasks..."
