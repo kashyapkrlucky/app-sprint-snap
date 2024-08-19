@@ -19,7 +19,7 @@ code {
 
 /* src/components/Modal.css */
 .modal-overlay {
-  background: rgba(200, 200, 200, 0.9);
+  background: rgba(39, 39, 39, 0.9);
   z-index: 1000;
 }
 

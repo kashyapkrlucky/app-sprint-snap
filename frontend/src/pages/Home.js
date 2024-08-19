@@ -1,54 +1,48 @@
 // pages/HomePage.js
-import React, { useEffect, useState } from 'react';
-import Banner from '../components/Home/Banner';
+import React, { useContext, useEffect, useState } from 'react';
 import TaskList from '../components/Home/TaskList';
 import ProjectList from '../components/Home/ProjectList';
 import Team from '../components/Home/Team';
-import { getProfile, getTasks, getProjects, getTeam } from '../shared/Data'; // Replace with actual data fetching
+import { getTasks, getProjects, getTeam } from '../shared/Data'; // Replace with actual data fetching
 import Layout from '../components/Layout';
-import TopBar from '../components/Layout/TopBar';
+import { AuthContext } from '../contexts/AuthContext';
+import { GET_PROJECTS } from '../graphql/queries';
+import { useQuery } from '@apollo/client';
 
 const HomePage = () => {
-    const [user, setUser] = useState({
-        fullName: 'John Doe',
-        avatarUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-    });
+    const { user } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
-    const [projects, setProjects] = useState([]);
+    const { loading, error, data } = useQuery(GET_PROJECTS);
     const [team, setTeam] = useState([]);
-
 
     useEffect(() => {
         const fetchData = async () => {
-            const userProfile = await getProfile(); // Fetch user profile
             const userTasks = await getTasks(); // Fetch tasks
-            const userProjects = await getProjects(); // Fetch projects
             const userTeam = await getTeam(); // Fetch team members
 
-            setUser(userProfile);
             setTasks(userTasks);
-            setProjects(userProjects);
             setTeam(userTeam);
         };
-
         fetchData();
     }, []);
 
-    if (!user) return <div>Loading...</div>; // Add loading state
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error loading projects</p>;
 
     return (
         <Layout>
-            <div className='flex flex-col gap-4 w-full px-4 flex flex-col gap-4'>
-                <Banner user={user} />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                    <div>
-                        <TaskList tasks={tasks} />
-                    </div>
-                    <div>
-                        <ProjectList projects={projects} />
-                    </div>
-                    <div>
+            <div className='flex flex-col gap-4 w-full p-4 flex flex-col gap-4'>
+                <div className="bg-blue-600 text-white p-6 rounded-lg shadow-lg">
+                    <h1 className="text-2xl font-semibold">Welcome, {user?.fullName}</h1>
+                    <p className="text-base">Ready to tackle your tasks and projects?</p>
+                </div>
+                <div className="flex flex-row gap-4">
+                    <div className='flex flex-col gap-4 w-1/3'>
+                        <ProjectList projects={data?.projects} />
                         <Team team={team} />
+                    </div>
+                    <div className='flex flex-row w-2/3'>
+                        <TaskList tasks={tasks} />
                     </div>
                 </div>
             </div>

@@ -1,19 +1,23 @@
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { CREATE_PROJECT } from '../../graphql/mutations';
+import { generateProjectAbbreviation } from '../../utils/generics';
 
-const CreateProject = ({closeModal}) => {
+const CreateProject = ({ closeModal }) => {
     const [createProject] = useMutation(CREATE_PROJECT);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         startDate: '',
         endDate: '',
-        tags: '',
+        initials: ''
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if (name === 'name') {
+            formData.initials = generateProjectAbbreviation(formData.name)
+        }
         setFormData({
             ...formData,
             [name]: value,
@@ -27,7 +31,8 @@ const CreateProject = ({closeModal}) => {
                 name: formData.name,
                 description: formData.description,
                 startDate: formData.startDate,
-                endDate: formData.endDate
+                endDate: formData.endDate,
+                initials: formData.initials
             }
         });
         closeModal();
@@ -49,6 +54,9 @@ const CreateProject = ({closeModal}) => {
                     required
                 />
             </div>
+            <p>
+                {formData?.initials}
+            </p>
             <div className="mb-4">
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                     Description

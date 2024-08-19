@@ -10,15 +10,12 @@ const TaskList = ({ title }) => {
     ];
 
     return (
-        <div>
-            <h2 className="text-xl font-semibold mb-4">{title}</h2>
-            <div className="bg-white rounded-lg shadow-sm">
-                {tasks.length ? (
-                    tasks.map((task) => <TaskItem key={task.id} task={task} />)
-                ) : (
-                    <div className="p-4 text-gray-500">No tasks in backlog</div>
-                )}
-            </div>
+        <div className="bg-white rounded-lg shadow-sm p-3">
+            {tasks.length ? (
+                tasks.map((task) => <TaskItem key={task.id} task={task} />)
+            ) : (
+                <div className="p-4 text-gray-500">No tasks in backlog</div>
+            )}
         </div>
     );
 };

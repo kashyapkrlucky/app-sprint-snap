@@ -20,37 +20,37 @@ const TaskBoard = () => {
   const [tasks, setTasks] = useState(initialTasks);
 
   const onDragEnd = (result) => {
-  const { destination, source, draggableId } = result;
+    const { destination, source, draggableId } = result;
 
-  if (!destination) return;
+    if (!destination) return;
 
-  // Check if the task has unmet dependencies
-  const task = tasks[source.droppableId].find(t => t.id === draggableId);
+    // Check if the task has unmet dependencies
+    const task = tasks[source.droppableId].find(t => t.id === draggableId);
 
-  const unmetDependencies = task?.dependencies?.filter(depId => {
-    // Find the dependent task and check if it is done
-    const depTask = Object.values(tasks).flat().find(t => t.id === depId);
-    return depTask.status !== 'done';
-  });
+    const unmetDependencies = task?.dependencies?.filter(depId => {
+      // Find the dependent task and check if it is done
+      const depTask = Object.values(tasks).flat().find(t => t.id === depId);
+      return depTask.status !== 'done';
+    });
 
-  if (unmetDependencies?.length > 0) {
-    alert('Task cannot be moved until its dependencies are completed.');
-    return;
-  }
+    if (unmetDependencies?.length > 0) {
+      alert('Task cannot be moved until its dependencies are completed.');
+      return;
+    }
 
-  // Proceed with moving task if no unmet dependencies
-  const sourceColumn = tasks[source.droppableId];
-  const destinationColumn = tasks[destination.droppableId];
+    // Proceed with moving task if no unmet dependencies
+    const sourceColumn = tasks[source.droppableId];
+    const destinationColumn = tasks[destination.droppableId];
 
-  const [movedTask] = sourceColumn.splice(source.index, 1);
-  destinationColumn.splice(destination.index, 0, movedTask);
+    const [movedTask] = sourceColumn.splice(source.index, 1);
+    destinationColumn.splice(destination.index, 0, movedTask);
 
-  setTasks({
-    ...tasks,
-    [source.droppableId]: sourceColumn,
-    [destination.droppableId]: destinationColumn,
-  });
-};
+    setTasks({
+      ...tasks,
+      [source.droppableId]: sourceColumn,
+      [destination.droppableId]: destinationColumn,
+    });
+  };
 
 
   return (

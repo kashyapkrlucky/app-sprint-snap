@@ -35,7 +35,7 @@ const Modal = ({ title, isOpen, onClose, children }) => {
             <div className="modal-overlay fixed top-0 left-0 bottom-0 right-0 flex flex-row justify-center items-center">
                 <div className="modal-content bg-white p-4 rounded-xl my-4 lg:w-1/2" ref={modalRef}>
                     <header className='w-full flex flex-row justify-between items-center border-b pb-4'>
-                        <p className='text-lg font-semibold text-gray-500'>{title}</p>
+                        <p className='text-lg font-semibold text-gray-500 capitalize'>{title}</p>
                         <button
                             type="button"
                             onClick={() => onClose(false)}

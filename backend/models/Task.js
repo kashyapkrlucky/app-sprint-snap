@@ -10,7 +10,9 @@ const taskSchema = new Schema({
   assignee: { type: Schema.Types.ObjectId, ref: 'User' },
   project: { type: Schema.Types.ObjectId, ref: 'Project' },
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
-  notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }]
+  notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
+  ticketType: { type: String },
+  sprints: [{ type: Schema.Types.ObjectId, ref: 'Sprint' }]
 }, { timestamps: true });
 
 const Task = mongoose.model('Task', taskSchema);
