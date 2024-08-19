@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import TaskList from '../components/Home/TaskList';
 import ProjectList from '../components/Home/ProjectList';
 import Team from '../components/Home/Team';
-import { getTasks, getProjects, getTeam } from '../shared/Data'; // Replace with actual data fetching
+import { getTasks, getTeam } from '../shared/Data'; // Replace with actual data fetching
 import Layout from '../components/Layout';
 import { AuthContext } from '../contexts/AuthContext';
 import { GET_PROJECTS } from '../graphql/queries';

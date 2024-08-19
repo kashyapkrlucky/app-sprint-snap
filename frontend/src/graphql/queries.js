@@ -54,23 +54,40 @@ export const GET_TASK = gql`
 // Sprint Queries
 export const GET_SPRINTS = gql`
   query GetSprints($projectId: ID!) {
-    getSprints(projectId: $projectId) {
+    sprints(projectId: $projectId) {
       id
       name
       startDate
       endDate
+      status
+      tasks {
+        id
+        title
+        ticketType
+        assignee {
+          id
+          fullName
+        }
+        status
+      }
     }
   }
 `;
 
 export const GET_SPRINT = gql`
   query GetSprint($sprintId: ID!) {
-    getSprint(sprintId: $sprintId) {
+    sprint(sprintId: $sprintId) {
       id
       name
+      startDate
+      endDate
+      status
       tasks {
         id
         title
+        ticketType
+        assignee
+        status
       }
     }
   }
@@ -79,7 +96,7 @@ export const GET_SPRINT = gql`
 // Board Queries
 export const GET_BOARDS = gql`
   query GetBoards($projectId: ID!) {
-    getBoards(projectId: $projectId) {
+    boards(projectId: $projectId) {
       id
       name
       columns {
@@ -92,7 +109,7 @@ export const GET_BOARDS = gql`
 
 export const GET_BOARD = gql`
   query GetBoard($boardId: ID!) {
-    getBoard(boardId: $boardId) {
+    board(boardId: $boardId) {
       id
       name
       columns {

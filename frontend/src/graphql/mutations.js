@@ -57,6 +57,16 @@ export const UPDATE_PROJECT = gql`
   }
 `
 
+export const CREATE_SPRINT = gql`
+  mutation CreateSprint($name: String!, $projectId: ID!) {
+    createSprint(name: $name, projectId: $projectId) {
+      id
+      name
+      status
+    }
+  }
+`
+
 // mutation DeleteProject($id: ID!) {
 //   deleteProject(id: $id) {
 //     id
@@ -168,18 +178,7 @@ export const UPDATE_PROJECT = gql`
 // }
 
 
-// mutation CreateSprint($name: String!, $projectId: ID!, $startDate: String!, $endDate: String!) {
-//   createSprint(name: $name, projectId: $projectId, startDate: $startDate, endDate: $endDate) {
-//     id
-//     name
-//     startDate
-//     endDate
-//     project {
-//       id
-//       name
-//     }
-//   }
-// }
+
 
 // mutation UpdateSprint($sprintId: ID!, $name: String, $status: String, $startDate: String, $endDate: String) {
 //   updateSprint(sprintId: $sprintId, name: $name, status: $status, startDate: $startDate, endDate: $endDate) {

@@ -7,11 +7,11 @@ const Notification = require('../models/Notification');
 const projectResolver = {
     Query: {
         projects: async () => {
-            return await Project.find().populate('members');
+            return await Project.find().populate('members').sort({ createdAt: -1 });
         },
         project: (parent, { id }) => Project.findById(id).populate('members').populate('tasks').populate('notifications'),
         sprints: async (_, { projectId }) => {
-            return await Sprint.find({ project: projectId }).populate('tasks');
+            return await Sprint.find({ project: projectId }).populate('tasks').sort({ createdAt: -1 });
         },
         sprint: async (_, { sprintId }) => {
             return await Sprint.findById(sprintId).populate('tasks');
@@ -32,7 +32,7 @@ const projectResolver = {
         comment: (parent, { id }) => Comment.findById(id).populate('author').populate('task'),
         notifications: () => Notification.find().populate('recipient').populate('relatedTask').populate('relatedProject').populate('createdBy'),
         notification: (parent, { id }) => Notification.findById(id).populate('recipient').populate('relatedTask').populate('relatedProject').populate('createdBy'),
-        
+
     },
     Mutation: {
         createProject: async (parent, args) => {
@@ -130,7 +130,7 @@ const projectResolver = {
         deleteNotification: async (parent, { id }) => {
             return Notification.findByIdAndDelete(id);
         },
-        
+
     }
 };
 

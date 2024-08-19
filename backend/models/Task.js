@@ -8,10 +8,11 @@ const taskSchema = new Schema({
   priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
   dueDate: { type: Date },
   assignee: { type: Schema.Types.ObjectId, ref: 'User' },
+  reporter: { type: Schema.Types.ObjectId, ref: 'User' },
   project: { type: Schema.Types.ObjectId, ref: 'Project' },
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
-  ticketType: { type: String },
+  ticketType: { type: String, required: true },
   sprints: [{ type: Schema.Types.ObjectId, ref: 'Sprint' }]
 }, { timestamps: true });
 

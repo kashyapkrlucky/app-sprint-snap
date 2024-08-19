@@ -20,8 +20,8 @@ const typeDefs = gql`
     id: ID!
     name: String!
     project: Project!
-    startDate: String!
-    endDate: String!
+    startDate: String
+    endDate: String
     status: String!
     tasks: [Task!]
     createdAt: String!
@@ -60,8 +60,10 @@ const typeDefs = gql`
     project: Project
     comments: [Comment]
     notifications: [Notification]
+    ticketType: String
     createdAt: String
     updatedAt: String
+    sprints: [Sprint]
   }
 
   type Comment {
