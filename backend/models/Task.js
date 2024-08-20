@@ -13,7 +13,8 @@ const taskSchema = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
   ticketType: { type: String, required: true },
-  sprints: [{ type: Schema.Types.ObjectId, ref: 'Sprint' }]
+  sprints: [{ type: Schema.Types.ObjectId, ref: 'Sprint' }],
+  ticketNumber: { type: String, unique: true }
 }, { timestamps: true });
 
 const Task = mongoose.model('Task', taskSchema);

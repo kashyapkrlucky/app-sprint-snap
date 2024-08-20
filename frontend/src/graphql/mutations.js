@@ -67,23 +67,23 @@ export const CREATE_SPRINT = gql`
   }
 `
 
+export const CREATE_TASK = gql`
+  mutation CreateTask($title: String!, $description: String!, $projectId: ID!, $priority: String, $reporter: ID!, $ticketType:String!, $sprintId: ID) {
+    createTask(title: $title, description: $description, projectId: $projectId, priority: $priority, reporter: $reporter, ticketType: $ticketType, sprintId: $sprintId) {
+      id
+      title
+      description
+    }
+  }
+`
+
 // mutation DeleteProject($id: ID!) {
 //   deleteProject(id: $id) {
 //     id
 //   }
 // }
 
-// mutation CreateTask($title: String!, $description: String!, $projectId: ID!) {
-//   createTask(title: $title, description: $description, projectId: $projectId) {
-//     id
-//     title
-//     description
-//     project {
-//       id
-//       name
-//     }
-//   }
-// }
+
 
 // mutation UpdateTask($id: ID!, $title: String, $description: String) {
 //   updateTask(id: $id, title: $title, description: $description) {

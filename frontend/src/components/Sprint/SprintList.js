@@ -13,7 +13,7 @@ const SprintList = ({ sprints }) => {
             <div className="space-y-6">
                 {sprints.map((sprint) => (
                     <div
-                        key={sprint.id}
+                        key={sprint?.id}
                         className="bg-white rounded-lg shadow-lg p-6 transition-shadow hover:shadow-xl"
                     >
                         <div className="flex justify-between items-center">
@@ -24,26 +24,26 @@ const SprintList = ({ sprints }) => {
                                 </p>
                             </div>
                             <button
-                                onClick={() => toggleSprintTasks(sprint.id)}
+                                onClick={() => toggleSprintTasks(sprint?.id)}
                                 className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
                             >
-                                {expandedSprintId === sprint.id ? 'Hide Tasks' : 'Show Tasks'}
+                                {expandedSprintId === sprint?.id ? 'Hide Tasks' : 'Show Tasks'}
                             </button>
                         </div>
-                        {expandedSprintId === sprint.id && (
+                        {expandedSprintId === sprint?.id && (
                             <div className="mt-4">
                                 <h4 className="text-lg font-semibold text-gray-700 mb-2">Tasks</h4>
                                 <ul className="space-y-3">
                                     {sprint.tasks.map((task) => (
                                         <li
-                                            key={task.id}
+                                            key={task?.id}
                                             className="flex justify-between bg-gray-100 rounded-lg p-3 shadow-sm"
                                         >
                                             <div>
-                                                <h5 className="font-medium text-gray-800">{task.title}</h5>
-                                                <p className="text-xs text-gray-500">Status: {task.status}</p>
+                                                <h5 className="font-medium text-gray-800">{task?.title}</h5>
+                                                <p className="text-xs text-gray-500">Status: {task?.status}</p>
                                             </div>
-                                            <p className="text-xs text-gray-500">Assignee: {task.assignee.fullName}</p>
+                                            <p className="text-xs text-gray-500">Assignee: {task?.assignee?.fullName}</p>
                                         </li>
                                     ))}
                                 </ul>

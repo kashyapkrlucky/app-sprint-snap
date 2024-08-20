@@ -3,15 +3,39 @@ const Sprint = require('../models/Sprint');
 const Board = require('../models/Board');
 const Task = require('../models/Task');
 const Notification = require('../models/Notification');
+const { default: mongoose } = require('mongoose');
 
 const projectResolver = {
     Query: {
-        projects: async () => {
-            return await Project.find().populate('members').sort({ createdAt: -1 });
+        projects: async (_, { userId }) => {
+            console.log(userId);
+            
+            return await Project.find({ members: userId }).populate('members').sort({ createdAt: -1 });
         },
         project: (parent, { id }) => Project.findById(id).populate('members').populate('tasks').populate('notifications'),
         sprints: async (_, { projectId }) => {
-            return await Sprint.find({ project: projectId }).populate('tasks').sort({ createdAt: -1 });
+            return await Sprint.find({ project: projectId }).sort({ createdAt: -1 });
+        },
+        sprintsWithTasks: async (_, { projectId }) => {
+            const items = await Sprint.find({ project: projectId }).populate('tasks').populate({
+                path: 'tasks',
+                populate: {
+                    path: 'reporter',
+                    model: 'User' // Assuming 'User' is the model name for the reporter
+                }
+            }).sort({ createdAt: -1 });
+
+            const unassignedTasks = await Task.find({ project: projectId, sprints: [] })
+                .populate('reporter');
+    
+            items.push({
+                id: new mongoose.Types.ObjectId(),
+                name: 'Backlog',
+                tasks: unassignedTasks,
+                status: 'Not'
+            });
+    
+            return items;
         },
         sprint: async (_, { sprintId }) => {
             return await Sprint.findById(sprintId).populate('tasks');
@@ -85,8 +109,43 @@ const projectResolver = {
             return true;
         },
         createTask: async (parent, args) => {
-            const task = new Task(args);
-            return task.save();
+            const { projectId, title, description, reporter, priority, sprintId, ticketType } = args;
+
+            // Fetch the project and increment the ticketCount
+            const project = await Project.findById(projectId);
+            if (!project) throw new Error('Project not found');
+
+            project.ticketCount += 1;
+            await project.save();
+
+            // Generate the ticket number (e.g., PRO-001)
+            const ticketNumber = `${project.initials}-${project.ticketCount.toString().padStart(3, '0')}`;
+
+            // Create the new task with the generated ticket number
+            const task = new Task({
+                title,
+                description,
+                project: projectId,
+                reporter,
+                priority,
+                ticketType,
+                ticketNumber, // Set the generated ticket number
+            });
+
+            // Push sprintId to the task's sprints array if sprintId is provided and doesn't already exist
+            if (sprintId && !task.sprints.includes(sprintId)) {
+                task.sprints.push(sprintId);
+            }
+
+            const newTask = await task.save();
+
+            if (sprintId) {
+                const sprint = await Sprint.findById(sprintId);
+                sprint.tasks.push(newTask.id);
+                sprint.save();
+            }
+            // Save the task
+            return newTask;
         },
         updateTask: async (parent, { id, ...updates }) => {
             return Task.findByIdAndUpdate(id, updates, { new: true });

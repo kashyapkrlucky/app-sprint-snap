@@ -5,6 +5,7 @@ const Avatar = ({ imageUrl, name, size = 'md' }) => {
   const baseStyle = 'rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-semibold';
 
   const sizeStyles = {
+    xs: 'h-6 w-6 text-xs',
     sm: 'h-8 w-8 text-sm',
     md: 'h-12 w-12 text-lg',
     lg: 'h-16 w-16 text-xl',
@@ -15,7 +16,7 @@ const Avatar = ({ imageUrl, name, size = 'md' }) => {
       {imageUrl ? (
         <img className="rounded-full" src={imageUrl} alt={name} />
       ) : (
-        <span>{name ? name.charAt(0) : '?'}</span>
+        <span title={name}>{name ? name.charAt(0) : '?'}</span>
       )}
     </div>
   );

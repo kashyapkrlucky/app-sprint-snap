@@ -94,8 +94,8 @@ const CreateSprint = ({ onSubmit, projects }) => {
           >
             <option value="">Select a project</option>
             {projects.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.name}
+              <option key={project?.id} value={project?.id}>
+                {project?.name}
               </option>
             ))}
           </select>

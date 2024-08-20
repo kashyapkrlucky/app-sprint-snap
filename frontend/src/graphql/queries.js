@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 
 // Project Queries
 export const GET_PROJECTS = gql`
-  query GetProjects {
-    projects {
+  query GetProjects($userId: ID!) {
+    projects(userId: $userId) {
       id
       name
       description
@@ -60,13 +60,28 @@ export const GET_SPRINTS = gql`
       startDate
       endDate
       status
+    }
+  }
+`;
+
+// Sprint Queries
+export const GET_SPRINTS_WITH_TASKS = gql`
+  query GetSprintsWithTasks($projectId: ID) {
+    sprintsWithTasks(projectId: $projectId) {
+      id
+      name
+      startDate
+      endDate
+      status
       tasks {
         id
         title
         ticketType
-        assignee {
+        ticketNumber
+        reporter {
           id
           fullName
+          avatar
         }
         status
       }

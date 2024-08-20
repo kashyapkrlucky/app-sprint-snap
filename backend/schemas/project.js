@@ -57,6 +57,7 @@ const typeDefs = gql`
     priority: String
     dueDate: String
     assignee: User
+    reporter: User
     project: Project
     comments: [Comment]
     notifications: [Notification]
@@ -64,6 +65,7 @@ const typeDefs = gql`
     createdAt: String
     updatedAt: String
     sprints: [Sprint]
+    ticketNumber: String
   }
 
   type Comment {
@@ -89,9 +91,10 @@ const typeDefs = gql`
   }
 
   type Query {
-    projects: [Project]
+    projects(userId: ID!): [Project]
     project(id: ID!): Project
     sprints(projectId: ID!): [Sprint!]
+    sprintsWithTasks(projectId: ID): [Sprint]
     sprint(sprintId: ID!): Sprint
     boards(projectId: ID!): [Board!]
     board(boardId: ID!): Board
@@ -117,7 +120,7 @@ const typeDefs = gql`
     updateBoard(boardId: ID!, name: String): Board!
     deleteBoard(boardId: ID!): Boolean!
 
-    createTask(title: String!, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
+    createTask(title: String!, description: String, priority: String, reporter: ID!, projectId: ID!, ticketType:String!, sprintId: ID): Task
     updateTask(id: ID!, title: String, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
     deleteTask(id: ID!): Task
     moveTask(boardId: ID!, taskId: ID!, fromColumn: String!, toColumn: String!): Board!

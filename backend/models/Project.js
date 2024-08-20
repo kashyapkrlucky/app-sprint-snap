@@ -10,7 +10,8 @@ const projectSchema = new Schema({
   members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
   notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
-  initials: { type: String }
+  initials: { type: String },
+  ticketCount: { type: Number, default: 0 }
 }, { timestamps: true });
 
 const Project = mongoose.model('Project', projectSchema);

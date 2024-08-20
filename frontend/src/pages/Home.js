@@ -27,7 +27,7 @@ const HomePage = () => {
     }, []);
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading projects</p>;
+    if (error) return <p>Error loading projects in home</p>;
 
     return (
         <Layout>

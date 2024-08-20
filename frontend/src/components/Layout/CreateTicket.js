@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
+import { CREATE_TASK } from '../../graphql/mutations';
+import { GET_SPRINTS } from '../../graphql/queries';
+import { useAppSelection } from '../../contexts/AppSelectionContext';
+import { useMutation, useQuery } from '@apollo/client';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const CreateTicket = ({ ticketType, closeModal }) => {
     const [title, setTitle] = useState('');
+    const { user } = useContext(AuthContext);
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('Low');
     const [selectedSprint, setSelectedSprint] = useState('');
-    const [sprints, setSprints] = useState([]);
 
-    // Simulate fetching sprints (you would replace this with an API call)
-    useEffect(() => {
-        const fetchSprints = () => {
-            const dummySprints = [
-                { id: '1', name: 'Sprint 1' },
-                { id: '2', name: 'Sprint 2' },
-                { id: '3', name: 'Sprint 3' },
-            ];
-            setSprints(dummySprints);
-            setSelectedSprint(dummySprints[0].id); // Default selection
-        };
+    const { selectedProject } = useAppSelection();
 
-        fetchSprints();
-    }, []);
+    const { data } = useQuery(GET_SPRINTS, {
+        variables: { projectId: selectedProject?.id },
+    });
+
+    const [createTask] = useMutation(CREATE_TASK, {
+        refetchQueries: [{ query: GET_SPRINTS, variables: { projectId: selectedProject?.id } }]
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -29,8 +29,19 @@ const CreateTicket = ({ ticketType, closeModal }) => {
             description,
             priority,
             sprintId: selectedSprint,
-            type: ticketType,
+            ticketType,
+            reporter: user?.id,
+            projectId: selectedProject?.id
         };
+        console.log(selectedSprint);
+        
+        if (selectedSprint) {
+            ticketData.sprintId = selectedSprint;
+        }
+
+        createTask({
+            variables: ticketData
+        })
 
         // Placeholder for actual create ticket logic (API call)
         console.log(`Created a ${ticketType}:`, ticketData);
@@ -39,7 +50,7 @@ const CreateTicket = ({ ticketType, closeModal }) => {
         setTitle('');
         setDescription('');
         setPriority('Low');
-        setSelectedSprint(sprints.length > 0 ? sprints[0].id : '');
+        setSelectedSprint(null);
         closeModal();
     };
 
@@ -90,9 +101,10 @@ const CreateTicket = ({ ticketType, closeModal }) => {
                     onChange={(e) => setSelectedSprint(e.target.value)}
                     className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring focus:ring-blue-500"
                 >
-                    {sprints.map((sprint) => (
-                        <option key={sprint.id} value={sprint.id}>
-                            {sprint.name}
+                    <option value={''}>None</option>
+                    {data?.sprints?.map((sprint) => (
+                        <option key={sprint?.id} value={sprint?.id}>
+                            {sprint?.name}
                         </option>
                     ))}
                 </select>
