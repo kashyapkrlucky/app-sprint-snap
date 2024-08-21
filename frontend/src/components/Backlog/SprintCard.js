@@ -5,6 +5,7 @@ import { GET_SPRINTS_WITH_TASKS } from '../../graphql/queries';
 import { useMutation } from '@apollo/client';
 import TaskIcon from '../TaskIcon';
 import Avatar from '../../shared/Avatar';
+import TaskItem from './TaskItem';
 
 function SprintCard({ sprint, selectedProject, closeAction }) {
     const [sprintName, setSprintName] = useState('');
@@ -53,14 +54,7 @@ function SprintCard({ sprint, selectedProject, closeAction }) {
                 {
                     sprint?.tasks?.length > 0 ?
                         sprint?.tasks.map(t => (
-                            <div className='flex flex-row justify-between items-center bg-white p-2 first:rounded-t-lg last:rounded-b-lg cursor-pointer select-none' key={t?.id}>
-                                <div className='flex flex-row items-center gap-3'>
-                                    <TaskIcon type={t?.ticketType} /> <span className={(t?.status === 'Done') && 'line-through text-gray-400'}>{t?.ticketNumber}</span> <span className='font-medium text-gray-700'>{t?.title}</span>
-                                </div>
-                                <div>
-                                    {(t?.assignee || t?.reporter) ? <Avatar size={'xs'} name={t?.assignee?.fullName || t?.reporter?.fullName}/> : <UserCircleIcon className='w-6 h-6' title='Not assigned'/>}
-                                </div>
-                            </div>
+                            <TaskItem t={t} key={t?.id}/>
                         )) :
                         <div className='w-full border-2 border-dashed border-gray-300 p-2 rounded-md flex flex-row text-xs justify-center items-center text-gray-400 select-none'>No tickets yet...</div>
                 }

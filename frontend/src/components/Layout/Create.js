@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog } from '@headlessui/react';
-import { CheckBadgeIcon, CheckCircleIcon, CheckIcon, StopCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, StopCircleIcon } from '@heroicons/react/24/outline';
 import Modal from '../../shared/Modal';
 import CreateTicket from './CreateTicket';
 

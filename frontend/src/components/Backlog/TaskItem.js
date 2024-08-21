@@ -1,27 +1,17 @@
 import React from 'react';
+import TaskIcon from '../TaskIcon';
+import Avatar from '../../shared/Avatar';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { NavLink } from "react-router-dom";
 
-const TaskItem = ({ task }) => {
+const TaskItem = ({ t }) => {
     return (
-        <div className="border-b last:border-none p-4 flex justify-between items-center">
-            <div>
-                <h3 className="text-lg font-semibold">{task.title}</h3>
-                <div className="text-gray-500 text-sm">
-                    <span className="mr-2">Priority: {task.priority}</span>
-                    {task.tags && task.tags.map((tag, index) => (
-                        <span
-                            key={index}
-                            className="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-lg mr-2"
-                        >
-                            {tag}
-                        </span>
-                    ))}
-                </div>
+        <div className='flex flex-row justify-between items-center bg-white p-2 first:rounded-t-lg last:rounded-b-lg cursor-pointer select-none'>
+            <div className='flex flex-row items-center gap-3'>
+                <TaskIcon type={t?.ticketType} /> <NavLink to={`/task/${t?.ticketNumber}`} className={(t?.status === 'Done') ? 'line-through text-gray-400' : ''}>{t?.ticketNumber}</NavLink> <span className='font-medium text-gray-700'>{t?.title}</span>
             </div>
-
-            {/* Task Actions */}
-            <div className="flex space-x-4">
-                <button className="text-gray-500 hover:text-gray-700">Assign to Sprint</button>
-                <button className="text-blue-500 hover:text-blue-600">Edit</button>
+            <div>
+                {(t?.assignee || t?.reporter) ? <Avatar size={'xs'} name={t?.assignee?.fullName || t?.reporter?.fullName} /> : <UserCircleIcon className='w-6 h-6' title='Not assigned' />}
             </div>
         </div>
     );

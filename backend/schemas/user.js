@@ -31,6 +31,7 @@ const typeDefs = gql`
   type Query {
     getUser(id: ID!): User
     getProfile(userId: ID!): Profile
+    searchUsers(text: String): [User]
   }
 
   type AuthPayload {

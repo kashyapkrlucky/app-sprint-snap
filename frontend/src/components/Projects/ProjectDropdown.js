@@ -16,7 +16,8 @@ const ProjectDropdown = () => {
   // Fetch projects from backend using GraphQL
   const { loading, error, data } = useQuery(GET_PROJECTS, {
     variables: {
-      userId: user?.id
+      userId: user?.id,
+      skip: !user
     }
   });
 

@@ -1,30 +1,27 @@
 // pages/HomePage.js
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import TaskList from '../components/Home/TaskList';
 import ProjectList from '../components/Home/ProjectList';
-import Team from '../components/Home/Team';
-import { getTasks, getTeam } from '../shared/Data'; // Replace with actual data fetching
 import Layout from '../components/Layout';
 import { AuthContext } from '../contexts/AuthContext';
-import { GET_PROJECTS } from '../graphql/queries';
+import { GET_PROJECTS, GET_TASKS } from '../graphql/queries';
 import { useQuery } from '@apollo/client';
 
 const HomePage = () => {
     const { user } = useContext(AuthContext);
-    const [tasks, setTasks] = useState([]);
-    const { loading, error, data } = useQuery(GET_PROJECTS);
-    const [team, setTeam] = useState([]);
+    const { loading, error, data } = useQuery(GET_PROJECTS, {
+        variables: {
+            userId: user?.id,
+            skip: !user
+        }
+    });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const userTasks = await getTasks(); // Fetch tasks
-            const userTeam = await getTeam(); // Fetch team members
-
-            setTasks(userTasks);
-            setTeam(userTeam);
-        };
-        fetchData();
-    }, []);
+    const { data: taskList } = useQuery(GET_TASKS, {
+        variables: {
+            userId: user?.id,
+            status: 'To Do'
+        }
+    });
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading projects in home</p>;
@@ -39,10 +36,9 @@ const HomePage = () => {
                 <div className="flex flex-row gap-4">
                     <div className='flex flex-col gap-4 w-1/3'>
                         <ProjectList projects={data?.projects} />
-                        <Team team={team} />
                     </div>
                     <div className='flex flex-row w-2/3'>
-                        <TaskList tasks={tasks} />
+                        <TaskList tasks={taskList?.tasks} />
                     </div>
                 </div>
             </div>

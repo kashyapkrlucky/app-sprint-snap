@@ -5,14 +5,14 @@ import { Link } from 'react-router-dom'; // Assuming you're using React Router
 import { ArrowLeftCircleIcon, ArrowRightCircleIcon, ChartBarSquareIcon, Cog8ToothIcon, QueueListIcon, RectangleGroupIcon } from '@heroicons/react/24/outline';
 
 const Sidebar = () => {
-    const [isOpen, setIsOpen] = useState(true); // State to toggle sidebar
+    const [isOpen, setIsOpen] = useState(false); // State to toggle sidebar
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
 
     return (
-        <div className={`flex flex-col ${isOpen ? 'w-64' : 'w-20'} h-screen bg-gray-800 text-white transition-width duration-300`}>
+        <div className={`flex flex-col ${isOpen ? 'w-64' : 'w-16'} h-screen bg-gray-800 text-white transition-width duration-300`}>
             <div className="flex flex-row items-center justify-between px-4 py-3">
                 <button
                     onClick={toggleSidebar}
@@ -20,7 +20,6 @@ const Sidebar = () => {
                     {isOpen ? <ArrowLeftCircleIcon className='w-8 h-8' /> : <ArrowRightCircleIcon className='w-8 h-8' />}
                 </button>
                 <p className={`text-xl font-bold transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0'}`}>SprintSnap</p>
-
             </div>
 
             <nav className="mt-5 p-2">

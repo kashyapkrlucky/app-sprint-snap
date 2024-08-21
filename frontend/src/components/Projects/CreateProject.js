@@ -1,10 +1,15 @@
 import { useMutation } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { CREATE_PROJECT } from '../../graphql/mutations';
 import { generateProjectAbbreviation } from '../../utils/generics';
+import { AuthContext } from '../../contexts/AuthContext';
+import { GET_PROJECTS } from '../../graphql/queries';
 
 const CreateProject = ({ closeModal }) => {
-    const [createProject] = useMutation(CREATE_PROJECT);
+    const { user } = useContext(AuthContext);
+    const [createProject] = useMutation(CREATE_PROJECT, {
+        refetchQueries: [{ query: GET_PROJECTS, variables: { userId: user?.id } }]
+    });
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -26,14 +31,16 @@ const CreateProject = ({ closeModal }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const payload = {
+            name: formData.name,
+            description: formData.description,
+            startDate: formData.startDate,
+            endDate: formData.endDate,
+            initials: formData.initials,
+            member: user?.id
+        }
         createProject({
-            variables: {
-                name: formData.name,
-                description: formData.description,
-                startDate: formData.startDate,
-                endDate: formData.endDate,
-                initials: formData.initials
-            }
+            variables: payload
         });
         closeModal();
     };

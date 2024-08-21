@@ -26,6 +26,14 @@ const userResolvers = {
             } catch (error) {
                 throw new Error('Error fetching profile');
             }
+        },
+        searchUsers: async (_, { text }) => {
+            try {
+                const docs = await User.find({ fullName: new RegExp(text, 'i') })
+                return docs;
+            } catch (error) {
+                throw new Error('Error fetching profile');
+            }
         }
     },
     Mutation: {
@@ -113,7 +121,7 @@ const userResolvers = {
             if (theme) updates.theme = theme;
 
             const updatedProfile = await Profile.findByIdAndUpdate(profile.id, updates, { new: true }).populate('user');
-            
+
             return updatedProfile;
         },
         deleteUser: async (_, { id }) => {

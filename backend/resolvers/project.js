@@ -8,8 +8,6 @@ const { default: mongoose } = require('mongoose');
 const projectResolver = {
     Query: {
         projects: async (_, { userId }) => {
-            console.log(userId);
-            
             return await Project.find({ members: userId }).populate('members').sort({ createdAt: -1 });
         },
         project: (parent, { id }) => Project.findById(id).populate('members').populate('tasks').populate('notifications'),
@@ -27,14 +25,14 @@ const projectResolver = {
 
             const unassignedTasks = await Task.find({ project: projectId, sprints: [] })
                 .populate('reporter');
-    
+
             items.push({
                 id: new mongoose.Types.ObjectId(),
                 name: 'Backlog',
                 tasks: unassignedTasks,
                 status: 'Not'
             });
-    
+
             return items;
         },
         sprint: async (_, { sprintId }) => {
@@ -50,7 +48,13 @@ const projectResolver = {
                 path: 'columns.toDo columns.inProgress columns.review columns.done',
             });
         },
-        tasks: () => Task.find().populate('assignee').populate('project').populate('comments').populate('notifications'),
+        tasks: async (_, { userId, status }) => await Task.find({
+            status,
+            $or: [
+                { assignee: userId },
+                { reporter: userId }
+            ]
+        }).populate('assignee').populate('reporter').populate('project'),
         task: (parent, { id }) => Task.findById(id).populate('assignee').populate('project').populate('comments').populate('notifications'),
         comments: () => Comment.find().populate('author').populate('task'),
         comment: (parent, { id }) => Comment.findById(id).populate('author').populate('task'),
@@ -60,11 +64,22 @@ const projectResolver = {
     },
     Mutation: {
         createProject: async (parent, args) => {
-            const project = new Project(args);
+            const { name, description, startDate, endDate, status, initials, member } = args;
+            const project = new Project({
+                name, description, startDate, endDate, status, initials, members: [member]
+            });
             return project.save();
         },
         updateProject: async (parent, { id, ...updates }) => {
             return Project.findByIdAndUpdate(id, updates, { new: true });
+        },
+        addProjectMember: async (parent, { id, userId }) => {
+            const project = await Project.findById(id).populate('members');
+            if(project) {
+                project.members.push(userId);
+                await project.save();
+            }
+            return project;
         },
         deleteProject: async (parent, { id }) => {
             return Project.findByIdAndDelete(id);

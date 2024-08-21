@@ -98,7 +98,7 @@ const typeDefs = gql`
     sprint(sprintId: ID!): Sprint
     boards(projectId: ID!): [Board!]
     board(boardId: ID!): Board
-    tasks: [Task]
+    tasks(userId: ID!, status: String): [Task]
     task(id: ID!): Task
     comments: [Comment]
     comment(id: ID!): Comment
@@ -108,8 +108,9 @@ const typeDefs = gql`
 
   type Mutation {
     
-    createProject(name: String!, description: String, startDate: String, endDate: String, status: String, initials: String): Project
+    createProject(name: String!, description: String, startDate: String, endDate: String, status: String, initials: String, member: ID): Project
     updateProject(id: ID!, name: String, description: String, startDate: String, endDate: String, status: String): Project
+    addProjectMember(id: ID!, userId: ID): Project
     deleteProject(id: ID!): Project
 
     createSprint(name: String!, projectId: ID!): Sprint!

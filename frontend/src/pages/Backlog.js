@@ -31,8 +31,6 @@ const BacklogPage = () => {
                         <SprintCard key={sprint?.id} sprint={sprint} />
                     ))
                 }
-                {/* <TaskList title="Backlog" /> */}
-                {/* <SprintCard selectedProject={selectedProject} sprint={{name: 'Backlog'}}/> */}
             </div>
         </Layout>
     );

@@ -37,8 +37,8 @@ export const SIGNUP_MUTATION = gql`
 `;
 
 export const CREATE_PROJECT = gql`
-  mutation CreateProject($name: String!, $description: String!, $startDate:String, $endDate:String, $initials: String) {
-    createProject(name: $name, description: $description, startDate:$startDate, endDate:$endDate, initials: $initials) {
+  mutation CreateProject($name: String!, $description: String!, $startDate:String, $endDate:String, $initials: String, $member: ID) {
+    createProject(name: $name, description: $description, startDate:$startDate, endDate:$endDate, initials: $initials, member: $member) {
       id
       name
       description
@@ -53,6 +53,14 @@ export const UPDATE_PROJECT = gql`
       id
       name
       description
+    }
+  }
+`
+export const ADD_PROJECT_MEMBER = gql`
+  mutation AddProjectMember($id: ID!, $userId: ID) {
+    addProjectMember(id: $id, userId: $userId) {
+      id
+      name
     }
   }
 `

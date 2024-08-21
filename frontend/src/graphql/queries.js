@@ -1,6 +1,17 @@
 import { gql } from "@apollo/client";
 
 // Project Queries
+export const SEARCH_USERS = gql`
+  query SearchUsers($text: String) {
+    searchUsers(text: $text) {
+      id
+      fullName
+      avatar
+    }
+  }
+`;
+
+// Project Queries
 export const GET_PROJECTS = gql`
   query GetProjects($userId: ID!) {
     projects(userId: $userId) {
@@ -8,6 +19,11 @@ export const GET_PROJECTS = gql`
       name
       description
       initials
+      members {
+        id
+        fullName
+        avatar
+      }
     }
   }
 `;
@@ -28,11 +44,29 @@ export const GET_PROJECT = gql`
 
 // Task Queries
 export const GET_TASKS = gql`
-  query GetTasks {
-    tasks {
+  query GetTasks($userId: ID!, $status: String) {
+    tasks(userId: $userId, status: $status) {
       id
       title
       description
+      status
+      priority
+      assignee{
+        id
+        fullName
+        avatar
+      }
+      reporter{
+        id
+        fullName
+        avatar
+      }
+      project {
+        id
+        name
+      }
+      ticketType
+      ticketNumber
     }
   }
 `;

@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import ProjectDropdown from '../Projects/ProjectDropdown';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { Cog6ToothIcon, MagnifyingGlassCircleIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import Avatar from '../../shared/Avatar';
 import { AuthContext } from '../../contexts/AuthContext';
