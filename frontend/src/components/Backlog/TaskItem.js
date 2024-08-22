@@ -3,6 +3,7 @@ import TaskIcon from '../TaskIcon';
 import Avatar from '../../shared/Avatar';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { NavLink } from "react-router-dom";
+import TaskStatus from '../TaskStatus';
 
 const TaskItem = ({ t, onSelectTask }) => {
     return (
@@ -12,7 +13,8 @@ const TaskItem = ({ t, onSelectTask }) => {
                 <NavLink to={`/task/${t?.ticketNumber}`} className={(t?.status === 'Done') ? 'line-through text-gray-400' : ''}>{t?.ticketNumber}</NavLink>
                 <span className='font-medium text-gray-700'>{t?.title}</span>
             </div>
-            <div className='w-auto'>
+            <div className='w-1/4 flex flex-row gap-2 justify-end'>
+                <TaskStatus taskId={t?.id} currentStatus={t?.status} type={'small'} />
                 {(t?.assignee || t?.reporter) ? <Avatar size={'xs'} name={t?.assignee?.fullName || t?.reporter?.fullName} /> : <UserCircleIcon className='w-6 h-6' title='Not assigned' />}
             </div>
         </div>
