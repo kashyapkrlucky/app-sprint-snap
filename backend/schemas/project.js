@@ -66,6 +66,7 @@ const typeDefs = gql`
     updatedAt: String
     sprints: [Sprint]
     ticketNumber: String
+    points: Int
   }
 
   type Comment {
@@ -122,8 +123,8 @@ const typeDefs = gql`
     updateBoard(boardId: ID!, name: String): Board!
     deleteBoard(boardId: ID!): Boolean!
 
-    createTask(title: String!, description: String, priority: String, reporter: ID!, projectId: ID!, ticketType:String!, sprintId: ID): Task
-    updateTask(id: ID!, title: String, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
+    createTask(title: String!, description: String, priority: String, reporter: ID!, projectId: ID!, ticketType:String!, sprintId: ID, points: Int): Task
+    updateTask(id: ID!, title: String, description: String, priority: String, points: Int): Task
     deleteTask(id: ID!): Task
     moveTask(boardId: ID!, taskId: ID!, fromColumn: String!, toColumn: String!): Board!
     updateTaskStatus(taskId: ID!, status: String): Task

@@ -1,7 +1,7 @@
 import { BoldIcon, ItalicIcon, UnderlineIcon } from "@heroicons/react/24/outline";
 import React, { useRef, useState } from "react";
 
-const TextEditor = ({submitComment}) => {
+const TextEditor = ({ submitComment }) => {
     const editorRef = useRef(null);
     const [selectedStyle, setSelectedStyle] = useState("");
 

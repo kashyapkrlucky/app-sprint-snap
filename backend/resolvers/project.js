@@ -161,7 +161,7 @@ const projectResolver = {
             return true;
         },
         createTask: async (parent, args) => {
-            const { projectId, title, description, reporter, priority, sprintId, ticketType } = args;
+            const { projectId, title, description, reporter, priority, sprintId, ticketType, points } = args;
 
             // Fetch the project and increment the ticketCount
             const project = await Project.findById(projectId);
@@ -181,7 +181,8 @@ const projectResolver = {
                 reporter,
                 priority,
                 ticketType,
-                ticketNumber, // Set the generated ticket number
+                ticketNumber,
+                points
             });
 
             // Push sprintId to the task's sprints array if sprintId is provided and doesn't already exist
@@ -199,8 +200,15 @@ const projectResolver = {
             // Save the task
             return newTask;
         },
-        updateTask: async (parent, { id, ...updates }) => {
-            return Task.findByIdAndUpdate(id, updates, { new: true });
+        updateTask: async (parent, args) => {
+            const { id, title, description, priority, points } = args;
+            const updates = {};
+            if (title) updates.title = title;
+            if (description) updates.description = description;
+            if (priority) updates.priority = priority;
+            if (points) updates.points = points;
+
+            return await Task.findByIdAndUpdate(id, updates, { new: true });
         },
         updateTaskStatus: async (parent, { taskId, status }) => {
             return await Task.findByIdAndUpdate(taskId, { status }, { new: true });

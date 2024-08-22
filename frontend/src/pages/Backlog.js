@@ -39,7 +39,7 @@ const BacklogPage = () => {
                 {/* Header Section */}
                 <BacklogHeader selectedProject={selectedProject} formAction={setIsSprintForm} />
                 <div className='flex flex-row gap-4'>
-                    <section className='w-full flex flex-col gap-4'>
+                    <section className='w-full flex flex-col h-full gap-4 overflow-y-scroll'>
                         {isSprintForm && <SprintCard selectedProject={selectedProject} closeAction={setIsSprintForm} createSprint={createSprint} />}
                         {
                             sprints?.map(sprint => (

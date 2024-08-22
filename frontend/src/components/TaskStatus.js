@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { UPDATE_TASK_STATUS } from '../graphql/mutations'; // Import the mutation
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useAppSelection } from '../contexts/AppSelectionContext';
 
 const TaskStatus = ({ taskId, currentStatus, type }) => {
+    const { selectedProject } = useAppSelection();
     const [selectedStatus, setSelectedStatus] = useState(currentStatus);
     const [isOpen, setIsOpen] = useState(false);
     const statuses = ['To Do', 'In Progress', 'Review', 'Done'];
@@ -19,7 +21,9 @@ const TaskStatus = ({ taskId, currentStatus, type }) => {
         'Review': 'text-purple-600 bg-purple-100',
         'Done': 'text-green-600 bg-green-100',
     };
-    const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS);
+    const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
+        variables: { projectId: selectedProject?.id, skip: !selectedProject?.id },
+    });
     const btnStyle = `flex items-center gap-2 justify-center w-full rounded-md shadow-sm px-4 py-2 text-sm text-white select-none font-medium text-gray-700 focus:outline-none ${statusColors[selectedStatus]}`;
     const btnStyleSmall = `flex items-center gap-1 justify-center w-full rounded-md shadow-sm px-2 py-0.5 text-xs uppercase select-none font-medium focus:outline-none ${statusColorsSmall[selectedStatus]}`;
     const handleStatusChange = async (newStatus) => {

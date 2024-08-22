@@ -2,25 +2,44 @@ import React from 'react';
 import Layout from '../components/Layout';
 import { useParams } from 'react-router-dom';
 import { GET_TASK_BY_NUMBER } from '../graphql/queries';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import DateFromNow from '../shared/DateFromNow';
 import TaskIcon from '../components/TaskIcon';
 import TextEditor from '../components/TextEditor';
+import Editable from '../components/Task/Editable';
+import TaskStatus from '../components/TaskStatus';
+import { UPDATE_TASK } from '../graphql/mutations';
+import { useAppSelection } from '../contexts/AppSelectionContext';
 
 const TaskDescriptionPage = () => {
     const { id } = useParams();
-    
+    const { selectedProject } = useAppSelection();
+
     const { loading, error, data } = useQuery(GET_TASK_BY_NUMBER, {
         variables: { ticketNumber: id, skip: !id },
     });
+
+    const [updateTask] = useMutation(UPDATE_TASK, {
+        variables: { projectId: selectedProject?.id, skip: !selectedProject?.id },
+    });
+
+    const submitComment = (text) => {
+        console.log(text);
+    }
+
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading projects in home</p>;
 
     const task = data?.taskByNumber;
 
-    const submitComment = (text) => {
-        console.log(text);
+    const updateValue = (name, value) => {
+        updateTask({
+            variables: {
+                id: task?.id,
+                [name]: value
+            }
+        })
     }
 
     return (
@@ -33,24 +52,12 @@ const TaskDescriptionPage = () => {
                             <span>{task?.ticketNumber}</span>
                             <span className="ml-2 text-sm text-yellow-500 font-semibold">{task?.priority}</span>
                         </div>
-                        <h1 className="text-3xl font-bold text-gray-800">{task?.title}</h1>
+                        <Editable type={'input'} name='title' value={task?.title} updateValue={updateValue} classes={'text-3xl font-bold text-gray-800'} />
                     </div>
 
                     {/* Action Buttons */}
                     <div className="flex flex-row gap-4 items-center text-sm">
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-                            Edit Task
-                        </button>
-                        <button
-                            className={`px-4 py-2 rounded-md ${task?.status === 'Completed'
-                                ? 'bg-green-200 text-green-800'
-                                : task?.status === 'In Progress'
-                                    ? 'bg-yellow-200 text-yellow-800'
-                                    : 'bg-gray-200 text-gray-800'
-                                }`}
-                        >
-                            {task?.status}
-                        </button>
+                        <TaskStatus taskId={task?.id} currentStatus={task?.status} />
                     </div>
                     <div className="mt-1 mb-1">
                         <span className="text-sm font-medium text-gray-700">Sprints:</span>
@@ -58,7 +65,8 @@ const TaskDescriptionPage = () => {
                     </div>
                     <div className="flex flex-col gap-2">
                         <h4 className='font-bold'>Description</h4>
-                        <p>{task?.description}</p>
+                        <Editable type={'textarea'} name='description' value={task?.description} updateValue={updateValue} />
+
                     </div>
 
 
@@ -75,7 +83,7 @@ const TaskDescriptionPage = () => {
                             ))}
                         </ul>
                         <div className='flex flex-col gap-4 items-start'>
-                            <TextEditor submitComment={submitComment}/>
+                            <TextEditor submitComment={submitComment} />
                         </div>
                     </div>
                 </div>

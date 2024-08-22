@@ -14,7 +14,8 @@ const taskSchema = new Schema({
   notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
   ticketType: { type: String, required: true },
   sprints: [{ type: Schema.Types.ObjectId, ref: 'Sprint' }],
-  ticketNumber: { type: String, unique: true }
+  ticketNumber: { type: String, unique: true },
+  points: { type: Number, default: 0, enum: [0, 1, 2, 3, 5, 8] }
 }, { timestamps: true });
 
 const Task = mongoose.model('Task', taskSchema);
