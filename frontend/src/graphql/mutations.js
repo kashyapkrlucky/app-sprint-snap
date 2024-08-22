@@ -74,6 +74,14 @@ export const CREATE_SPRINT = gql`
     }
   }
 `
+export const UPDATE_SPRINT = gql`
+  mutation UpdateSprint($sprintId: ID!, $name: String, $status: String, $startDate: String, $endDate: String) {
+    updateSprint(sprintId: $sprintId, name: $name, status: $status, startDate: $startDate, endDate: $endDate) {
+      id
+      name
+    }
+  }
+`
 
 export const CREATE_TASK = gql`
   mutation CreateTask($title: String!, $description: String!, $projectId: ID!, $priority: String, $reporter: ID!, $ticketType:String!, $sprintId: ID) {
@@ -188,15 +196,7 @@ export const CREATE_TASK = gql`
 
 
 
-// mutation UpdateSprint($sprintId: ID!, $name: String, $status: String, $startDate: String, $endDate: String) {
-//   updateSprint(sprintId: $sprintId, name: $name, status: $status, startDate: $startDate, endDate: $endDate) {
-//     id
-//     name
-//     status
-//     startDate
-//     endDate
-//   }
-// }
+
 
 // mutation DeleteSprint($sprintId: ID!) {
 //   deleteSprint(sprintId: $sprintId)

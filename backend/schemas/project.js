@@ -100,6 +100,7 @@ const typeDefs = gql`
     board(boardId: ID!): Board
     tasks(userId: ID!, status: String): [Task]
     task(id: ID!): Task
+    taskByNumber(ticketNumber: String): Task
     comments: [Comment]
     comment(id: ID!): Comment
     notifications: [Notification]

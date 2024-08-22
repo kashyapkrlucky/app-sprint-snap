@@ -85,6 +85,36 @@ export const GET_TASK = gql`
   }
 `;
 
+export const GET_TASK_BY_NUMBER = gql`
+  query GetTaskByNumber($ticketNumber: String) {
+    taskByNumber(ticketNumber: $ticketNumber) {
+      id
+      title
+      description
+      status
+      priority
+      assignee{
+        id
+        fullName
+        avatar
+      }
+      reporter{
+        id
+        fullName
+        avatar
+      }
+      ticketType
+      sprints {
+        id
+        name
+      }
+      ticketNumber
+      createdAt
+      updatedAt             
+    }
+  }
+`;
+
 // Sprint Queries
 export const GET_SPRINTS = gql`
   query GetSprints($projectId: ID!) {

@@ -1,5 +1,5 @@
 // components/Topbar.js
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import ProjectDropdown from '../Projects/ProjectDropdown';
 import { NavLink, useNavigate } from 'react-router-dom';
 
@@ -7,15 +7,23 @@ import { Cog6ToothIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/r
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import Avatar from '../../shared/Avatar';
 import { AuthContext } from '../../contexts/AuthContext';
-import Create from './Create';
+import CreateTicket from './CreateTicket';
+import Modal from '../../shared/Modal';
 
 const TopBar = () => {
     const { user, logout } = useContext(AuthContext);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const navigate = useNavigate();
     const navigation = [
         { name: 'My Profile', href: `/profile/${user && user.id}`, icon: <UserCircleIcon className='w-6 h-6' /> },
         { name: 'Settings', href: '/settings', icon: <Cog6ToothIcon className='w-6 h-6' /> }
     ];
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    }
 
     const onLogout = () => {
         logout();
@@ -35,7 +43,12 @@ const TopBar = () => {
                         className="w-full p-2 text-gray-800 bg-transparent focus:outline-none"
                     />
                 </div>
-                <Create/>
+                <button
+                    className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                    onClick={() => setIsModalOpen(true)}
+                >
+                    Create
+                </button>
             </div>
 
             {/* User Info & Action Menu */}
@@ -74,6 +87,9 @@ const TopBar = () => {
                     <NavLink to="/signup" className={'text-gray-300'}>Join Now</NavLink>
                 </>
             }
+            <Modal title={`Create Issue`} isOpen={isModalOpen} onClose={() => { closeModal() }}>
+                <CreateTicket closeModal={closeModal} />
+            </Modal>
         </div>
     );
 };
