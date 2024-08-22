@@ -94,8 +94,8 @@ export const CREATE_TASK = gql`
 `
 
 export const UPDATE_TASK = gql`
-  mutation UpdateTask($id: ID!, $title: String, $description: String, $priority: String, $points: Int) {
-    updateTask(id: $id, title: $title, description: $description, priority: $priority, points: $points) {
+  mutation UpdateTask($id: ID!, $title: String, $description: String, $priority: String, $points: Int, $assignee: ID) {
+    updateTask(id: $id, title: $title, description: $description, priority: $priority, points: $points, assignee: $assignee) {
       id
       title
       description

@@ -156,14 +156,18 @@ export const GET_SPRINTS_WITH_TASKS = gql`
       tasks {
         id
         title
-        ticketType
-        ticketNumber
-        reporter {
+        description
+        status
+        priority
+        assignee {
           id
           fullName
           avatar
         }
-        status
+        ticketType
+        ticketNumber
+        createdAt
+        updatedAt   
       }
     }
   }

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React from 'react'
-import { GET_TASK } from '../../graphql/queries';
+import { GET_SPRINTS_WITH_TASKS, GET_TASK } from '../../graphql/queries';
 import TaskIcon from '../TaskIcon';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import TaskStatus from '../TaskStatus';
@@ -18,7 +18,7 @@ function TaskCard({ id, setCurrentTask }) {
     });
 
     const [updateTask] = useMutation(UPDATE_TASK, {
-        variables: { projectId: selectedProject?.id, skip: !selectedProject?.id },
+        refetchQueries: [{ query: GET_SPRINTS_WITH_TASKS, variables: { projectId: selectedProject?.id } }]
     });
 
     const submitComment = (text) => {
@@ -73,7 +73,7 @@ function TaskCard({ id, setCurrentTask }) {
                         {(task?.assignee?.id !== task?.reporter?.id) && <button className='text-blue-600'>Assign to me</button>}
                     </div> */}
 
-                    <TaskAssignee taskId={task?.id} currentAssignee={task?.assignee} />
+                    <TaskAssignee name='assignee' value={task?.assignee} updateValue={updateValue} />
                 </div>
                 <div className='flex flex-row gap-1'>
                     <span className='text-gray-600 w-24'>Reporter</span>

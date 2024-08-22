@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useAppSelection } from '../../contexts/AppSelectionContext';
 
-const TaskAssignee = ({ taskId, currentAssignee }) => {
+const TaskAssignee = ({ name, value, updateValue }) => {
     const { selectedProject } = useAppSelection();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(currentAssignee);
+    const [selectedUser, setSelectedUser] = useState(value);
 
-    const handleUserSelect = async (user) => {
+    const onChange = async (user) => {
         setSelectedUser(user);
         setIsDropdownOpen(false);
+        updateValue(name, user?.id);
     };
 
     return (
@@ -27,7 +28,7 @@ const TaskAssignee = ({ taskId, currentAssignee }) => {
                             <li
                                 key={user.id}
                                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleUserSelect(user)}
+                                onClick={() => onChange(user)}
                             >
                                 {user?.fullName}
                             </li>

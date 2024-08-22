@@ -15,7 +15,7 @@ const TaskItem = ({ t, onSelectTask }) => {
             </div>
             <div className='w-1/4 flex flex-row gap-2 justify-end'>
                 <TaskStatus taskId={t?.id} currentStatus={t?.status} type={'small'} />
-                {(t?.assignee || t?.reporter) ? <Avatar size={'xs'} name={t?.assignee?.fullName || t?.reporter?.fullName} /> : <UserCircleIcon className='w-6 h-6' title='Not assigned' />}
+                {(t?.assignee) ? <Avatar size={'xs'} name={t?.assignee?.fullName} /> : <UserCircleIcon className='w-6 h-6' title='Not assigned' />}
             </div>
         </div>
     );

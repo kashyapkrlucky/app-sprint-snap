@@ -124,7 +124,7 @@ const typeDefs = gql`
     deleteBoard(boardId: ID!): Boolean!
 
     createTask(title: String!, description: String, priority: String, reporter: ID!, projectId: ID!, ticketType:String!, sprintId: ID, points: Int): Task
-    updateTask(id: ID!, title: String, description: String, priority: String, points: Int): Task
+    updateTask(id: ID!, title: String, description: String, priority: String, points: Int, assignee: ID): Task
     deleteTask(id: ID!): Task
     moveTask(boardId: ID!, taskId: ID!, fromColumn: String!, toColumn: String!): Board!
     updateTaskStatus(taskId: ID!, status: String): Task

@@ -19,7 +19,7 @@ const projectResolver = {
                 .populate({
                     path: 'tasks',
                     populate: {
-                        path: 'reporter',
+                        path: 'assignee',
                         model: 'User',
                     },
                     options: { sort: { createdAt: -1 } }
@@ -52,10 +52,7 @@ const projectResolver = {
         },
         tasks: async (_, { userId, status }) => await Task.find({
             status,
-            $or: [
-                { assignee: userId },
-                { reporter: userId }
-            ]
+            assignee: userId,
         }).populate('assignee').populate('reporter').populate('project'),
         taskByNumber: async (parent, { ticketNumber }) => await Task.findOne({ ticketNumber }).populate('assignee').populate('reporter').populate('sprints'),
         task: async (parent, { id }) => await Task.findById(id).populate('assignee').populate('reporter').populate('sprints'),
@@ -201,12 +198,13 @@ const projectResolver = {
             return newTask;
         },
         updateTask: async (parent, args) => {
-            const { id, title, description, priority, points } = args;
+            const { id, title, description, priority, points, assignee } = args;
             const updates = {};
             if (title) updates.title = title;
             if (description) updates.description = description;
             if (priority) updates.priority = priority;
             if (points) updates.points = points;
+            if (assignee) updates.assignee = assignee;
 
             return await Task.findByIdAndUpdate(id, updates, { new: true });
         },
