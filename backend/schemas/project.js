@@ -126,6 +126,7 @@ const typeDefs = gql`
     updateTask(id: ID!, title: String, description: String, status: String, priority: String, dueDate: String, assignee: ID, project: ID): Task
     deleteTask(id: ID!): Task
     moveTask(boardId: ID!, taskId: ID!, fromColumn: String!, toColumn: String!): Board!
+    updateTaskStatus(taskId: ID!, status: String): Task
     
     createComment(content: String!, author: ID, task: ID): Comment
     updateComment(id: ID!, content: String): Comment

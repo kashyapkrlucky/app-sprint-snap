@@ -22,7 +22,7 @@ const projectResolver = {
                         path: 'reporter',
                         model: 'User',
                     },
-                    options: {sort: { createdAt: -1 }}
+                    options: { sort: { createdAt: -1 } }
                 }).sort({ createdAt: -1 });
 
             const unassignedTasks = await Task.find({ project: projectId, sprints: [] })
@@ -58,7 +58,7 @@ const projectResolver = {
             ]
         }).populate('assignee').populate('reporter').populate('project'),
         taskByNumber: async (parent, { ticketNumber }) => await Task.findOne({ ticketNumber }).populate('assignee').populate('reporter').populate('sprints'),
-        task: (parent, { id }) => Task.findById(id).populate('assignee').populate('project').populate('comments').populate('notifications'),
+        task: async (parent, { id }) => await Task.findById(id).populate('assignee').populate('reporter').populate('sprints'),
         comments: () => Comment.find().populate('author').populate('task'),
         comment: (parent, { id }) => Comment.findById(id).populate('author').populate('task'),
         notifications: () => Notification.find().populate('recipient').populate('relatedTask').populate('relatedProject').populate('createdBy'),
@@ -201,6 +201,9 @@ const projectResolver = {
         },
         updateTask: async (parent, { id, ...updates }) => {
             return Task.findByIdAndUpdate(id, updates, { new: true });
+        },
+        updateTaskStatus: async (parent, { taskId, status }) => {
+            return await Task.findByIdAndUpdate(taskId, { status }, { new: true });
         },
         deleteTask: async (parent, { id }) => {
             return Task.findByIdAndDelete(id);

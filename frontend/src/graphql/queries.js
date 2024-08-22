@@ -77,10 +77,26 @@ export const GET_TASK = gql`
       id
       title
       description
-      comments {
+      status
+      priority
+      assignee{
         id
-        content
+        fullName
+        avatar
       }
+      reporter{
+        id
+        fullName
+        avatar
+      }
+      ticketType
+      sprints {
+        id
+        name
+      }
+      ticketNumber
+      createdAt
+      updatedAt   
     }
   }
 `;

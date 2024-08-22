@@ -9,8 +9,7 @@ import TextEditor from '../components/TextEditor';
 
 const TaskDescriptionPage = () => {
     const { id } = useParams();
-    console.log(id);
-
+    
     const { loading, error, data } = useQuery(GET_TASK_BY_NUMBER, {
         variables: { ticketNumber: id, skip: !id },
     });

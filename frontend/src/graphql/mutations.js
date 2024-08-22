@@ -93,6 +93,16 @@ export const CREATE_TASK = gql`
   }
 `
 
+export const UPDATE_TASK_STATUS = gql`
+  mutation UpdateTaskStatus($taskId: ID!, $status: String) {
+    updateTaskStatus(taskId: $taskId, status: $status) {
+      id
+      title
+      description
+    }
+  }
+`
+
 // mutation DeleteProject($id: ID!) {
 //   deleteProject(id: $id) {
 //     id
@@ -101,13 +111,7 @@ export const CREATE_TASK = gql`
 
 
 
-// mutation UpdateTask($id: ID!, $title: String, $description: String) {
-//   updateTask(id: $id, title: $title, description: $description) {
-//     id
-//     title
-//     description
-//   }
-// }
+
 
 // mutation DeleteTask($id: ID!) {
 //   deleteTask(id: $id) {
