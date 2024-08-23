@@ -5,7 +5,7 @@ import SprintCard from '../components/Backlog/SprintCard';
 import { GET_SPRINTS_WITH_TASKS } from '../graphql/queries';
 import { useMutation, useQuery } from '@apollo/client';
 import { useAppSelection } from '../contexts/AppSelectionContext';
-import { CREATE_SPRINT, UPDATE_SPRINT } from '../graphql/mutations';
+import { COMPLETE_SPRINT, CREATE_SPRINT, UPDATE_SPRINT } from '../graphql/mutations';
 import TaskCard from '../components/Backlog/TaskCard';
 
 const BacklogPage = () => {
@@ -27,11 +27,19 @@ const BacklogPage = () => {
         refetchQueries: [{ query: GET_SPRINTS_WITH_TASKS, variables: { projectId: selectedProject?.id } }]
     });
 
+    const [completeSprint] = useMutation(COMPLETE_SPRINT, {
+        refetchQueries: [{ query: GET_SPRINTS_WITH_TASKS, variables: { projectId: selectedProject?.id } }]
+    });
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading sprints</p>;
     const sprints = data?.sprintsWithTasks;
 
     const activeSprint = sprints.find(s => s.status === 'In Progress');
+
+    const futureSprints = sprints
+        .filter(s => s.status !== 'In Progress')
+        .map(s => ({ id: s?.id, name: s?.name }));
 
     return (
         <Layout>
@@ -43,7 +51,7 @@ const BacklogPage = () => {
                         {isSprintForm && <SprintCard selectedProject={selectedProject} closeAction={setIsSprintForm} createSprint={createSprint} />}
                         {
                             sprints?.map(sprint => (
-                                <SprintCard key={sprint?.id} sprint={sprint} activeSprint={activeSprint} updateSprint={updateSprint} setCurrentTask={setCurrentTask} />
+                                <SprintCard key={sprint?.id} sprint={sprint} activeSprint={activeSprint} updateSprint={updateSprint} setCurrentTask={setCurrentTask} futureSprints={futureSprints} completeSprint={completeSprint} />
                             ))
                         }
                     </section>
@@ -55,7 +63,6 @@ const BacklogPage = () => {
                     }
 
                 </div>
-
             </div>
         </Layout>
     );

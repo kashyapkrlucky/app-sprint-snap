@@ -29,7 +29,6 @@ function TaskCard({ id, setCurrentTask }) {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading sprints</p>;
     const task = data?.task;
-    console.log(task);
     
     const updateValue = (name, value) => {
         updateTask({

@@ -3,14 +3,19 @@ import React, { useEffect, useState } from 'react'
 import TaskItem from './TaskItem';
 import Moment from 'react-moment';
 import moment from 'moment';
+import Modal from '../../shared/Modal';
 
-function SprintCard({ sprint, selectedProject, closeAction, updateSprint, createSprint, activeSprint, setCurrentTask }) {
+function SprintCard({ sprint, selectedProject, closeAction, updateSprint, createSprint, activeSprint, setCurrentTask, futureSprints, completeSprint }) {
     const [sprintName, setSprintName] = useState('');
+
     const now = moment(); // Get current date and time
     const twoWeeksLater = moment().add(14, 'days'); // Add 14 days to the current date
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newSprintId, setNewSprintId] = useState('')
 
     const [donePoints, setDonePoints] = useState(0);
     const [pendingPoints, setPendingPoints] = useState(0);
+    const [pendingTickets, setPendingTickets] = useState([]);
 
     const onSubmit = () => {
         createSprint({
@@ -24,7 +29,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
     }
     useEffect(() => {
         const addPoints = (tasks, type) => {
-            const points = sprint?.tasks?.reduce((a, x) => {
+            const points = tasks?.reduce((a, x) => {
                 if (x.status === type) {
                     return a + x.points;
                 } else {
@@ -35,7 +40,8 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
         }
         setDonePoints(addPoints(sprint?.tasks, 'Done'));
         setPendingPoints(addPoints(sprint?.tasks, 'In Progress'));
-
+        const items = sprint?.tasks?.filter(x => ['In Progress', 'Review', 'To Do'].includes(x?.status)).map(x => x.id)
+        setPendingTickets(items)
     }, [sprint?.tasks]);
 
     const onUpdateSprint = (status) => {
@@ -49,6 +55,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
         }
         if (status === 'Complete Sprint') {
             payload.endDate = twoWeeksLater.format();
+            payload.nextSprint = '';
         }
         updateSprint({
             variables: payload
@@ -59,6 +66,17 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
         setCurrentTask(id);
     }
 
+    const onCompleteSprint = () => {
+        const payload = {
+            sprintId: sprint?.id,
+            newSprintId,
+            taskIds: pendingTickets
+        }
+        console.log(payload);
+        completeSprint({
+            variables: payload
+        })
+    }
     return (
         <div className='flex flex-col gap-2 bg-gray-100 border p-4 rounded-md'>
             <div className='flex flex-row gap-2'>
@@ -86,7 +104,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
 
                                             {
                                                 sprint?.status === 'In Progress' &&
-                                                <button className='bg-blue-500 text-white px-4 py-1 text-sm rounded' onClick={() => onUpdateSprint('Completed')}>Complete Sprint</button>
+                                                <button className='bg-blue-500 text-white px-4 py-1 text-sm rounded' onClick={() => setIsModalOpen(true)}>Complete Sprint</button>
                                             }
                                         </>}
                                     </> : <>
@@ -123,6 +141,17 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                         <div className='w-full border-2 border-dashed border-gray-300 p-2 rounded-md flex flex-row text-xs justify-center items-center text-gray-400 select-none'>No tickets yet...</div>
                 }
             </div>
+            <Modal title={`Complete Sprint`} isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); }}>
+                <div className='flex flex-col gap-4 items-start'>
+                    <p>There are still some pending tasks in this sprint, please select a sprint or backlog to move this tickets</p>
+                    <select onChange={(e) => setNewSprintId(e.target.value)}>
+                        {futureSprints?.map(fs => (
+                            <option key={fs?.id} value={fs?.id}>{fs?.name}</option>
+                        ))}
+                    </select>
+                    <button onClick={onCompleteSprint}>Save Changes</button>
+                </div>
+            </Modal>
         </div>
     )
 }

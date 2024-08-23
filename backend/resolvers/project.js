@@ -154,7 +154,25 @@ const projectResolver = {
                 { new: true }
             );
         },
+        completeSprint: async (_, { sprintId, newSprintId, taskIds }) => {
+            // Step 1: Update tasks with the new sprint ID
+            await Task.updateMany(
+                { _id: { $in: taskIds } }, // Filter tasks by the given task IDs
+                { $addToSet: { sprints: newSprintId } } // Set the new sprint ID
+            );
 
+            // Step 2: Remove task IDs from the old sprint
+            await Sprint.findByIdAndUpdate(sprintId, {
+                status: 'Completed',
+                $pull: { tasks: { $in: taskIds } }
+            });
+
+            // Step 3: Add task IDs to the new sprint
+            await Sprint.findByIdAndUpdate(newSprintId, {
+                $addToSet: { tasks: { $each: taskIds } } // $addToSet to avoid duplicates
+            });
+            return true;
+        },
         deleteSprint: async (_, { sprintId }) => {
             await Sprint.findByIdAndDelete(sprintId);
             return true;
