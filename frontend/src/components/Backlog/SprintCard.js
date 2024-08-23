@@ -9,6 +9,9 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
     const now = moment(); // Get current date and time
     const twoWeeksLater = moment().add(14, 'days'); // Add 14 days to the current date
 
+    const [donePoints, setDonePoints] = useState(0);
+    const [pendingPoints, setPendingPoints] = useState(0);
+
     const onSubmit = () => {
         createSprint({
             variables: {
@@ -20,9 +23,20 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
         closeAction();
     }
     useEffect(() => {
-        // console.log(sprint?.tasks);
-        
-    }, [sprint?.tasks])
+        const addPoints = (tasks, type) => {
+            const points = sprint?.tasks?.reduce((a, x) => {
+                if (x.status === type) {
+                    return a + x.points;
+                } else {
+                    return a;  // Return the accumulator unchanged if status is not 'Done'
+                }
+            }, 0);
+            return points;
+        }
+        setDonePoints(addPoints(sprint?.tasks, 'Done'));
+        setPendingPoints(addPoints(sprint?.tasks, 'In Progress'));
+
+    }, [sprint?.tasks]);
 
     const onUpdateSprint = (status) => {
         const payload = {
@@ -43,7 +57,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
 
     const onSelectTask = id => {
         console.log(id);
-        
+
         setCurrentTask(id);
     }
 
@@ -64,8 +78,8 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                             </div>
                             {sprint?.name !== 'Backlog' && <div className='flex flex-row gap-2 items-center'>
                                 <div className='flex flex-row gap-2'>
-                                    <div className='bg-blue-600 text-white rounded-full flex flex-row justify-center items-center w-6 h-6 text-sm font-medium'>0</div>
-                                    <div className='bg-green-600 text-white rounded-full flex flex-row justify-center items-center w-6 h-6 text-sm font-medium'>0</div>
+                                    <div className='bg-blue-600 text-white rounded-full flex flex-row justify-center items-center w-6 h-6 text-xs font-bold'>{pendingPoints}</div>
+                                    <div className='bg-green-600 text-white rounded-full flex flex-row justify-center items-center w-6 h-6 text-xs font-bold'>{donePoints}</div>
                                 </div>
 
                                 {
@@ -74,7 +88,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
 
                                             {
                                                 sprint?.status === 'In Progress' &&
-                                                <button className='bg-blue-600 text-white px-4 py-1 text-sm rounded' onClick={() => onUpdateSprint('Completed')}>Complete Sprint</button>
+                                                <button className='bg-blue-500 text-white px-4 py-1 text-sm rounded' onClick={() => onUpdateSprint('Completed')}>Complete Sprint</button>
                                             }
                                         </>}
                                     </> : <>

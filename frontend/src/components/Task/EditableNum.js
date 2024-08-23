@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { CheckCircleIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-function Editable({ type, name, value, updateValue, classes }) {
+function EditableNum({ name, value, updateValue, classes }) {
     const [isEditOn, setIsEditOn] = useState(false);
     const [content, setContent] = useState(value);
     
@@ -10,7 +10,7 @@ function Editable({ type, name, value, updateValue, classes }) {
     }
 
     const onSubmit = () => {
-        updateValue(name, content);
+        updateValue(name, parseFloat(content));
         setIsEditOn(false);
         setContent('');
     }
@@ -20,8 +20,7 @@ function Editable({ type, name, value, updateValue, classes }) {
             {
                 isEditOn ?
                     <div className='w-full flex flex-row gap-4'>
-                        {type === 'input' && <input className={'flex-1 border rounded px-2 py-1 ' + classes} type='text' value={content} onChange={onChange} />}
-                        {type === 'textarea' && <textarea className={'flex-1 border rounded px-2 py-1 ' + classes} value={content} onChange={onChange} />}
+                        <input className={'w-16 border rounded px-2 py-1 ' + classes} type='number' value={content} onChange={onChange} />
                         <button onClick={onSubmit}><CheckCircleIcon className='w-6 h-6' /></button>
                         <button onClick={() => {setIsEditOn(false); setContent(value)}}><XMarkIcon className='w-6 h-6' /></button>
                     </div> :
@@ -33,4 +32,4 @@ function Editable({ type, name, value, updateValue, classes }) {
     )
 }
 
-export default Editable
+export default EditableNum

@@ -67,6 +67,7 @@ export const GET_TASKS = gql`
       }
       ticketType
       ticketNumber
+      points
     }
   }
 `;
@@ -97,6 +98,7 @@ export const GET_TASK = gql`
       ticketNumber
       createdAt
       updatedAt   
+      points
     }
   }
 `;
@@ -126,7 +128,8 @@ export const GET_TASK_BY_NUMBER = gql`
       }
       ticketNumber
       createdAt
-      updatedAt             
+      updatedAt  
+      points           
     }
   }
 `;
@@ -168,6 +171,7 @@ export const GET_SPRINTS_WITH_TASKS = gql`
         ticketNumber
         createdAt
         updatedAt   
+        points
       }
     }
   }

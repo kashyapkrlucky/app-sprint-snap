@@ -2,7 +2,7 @@
 import React from 'react';
 
 const Avatar = ({ imageUrl, name, size = 'md' }) => {
-  const baseStyle = 'border rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-semibold';
+  const baseStyle = 'border rounded-full border-gray-500 text-gray-600 flex items-center justify-center font-semibold';
 
   const sizeStyles = {
     xs: 'h-6 w-6 text-xs',

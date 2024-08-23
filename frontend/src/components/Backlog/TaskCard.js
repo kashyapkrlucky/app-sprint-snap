@@ -10,6 +10,7 @@ import Editable from '../Task/Editable';
 import { UPDATE_TASK } from '../../graphql/mutations';
 import { useAppSelection } from '../../contexts/AppSelectionContext';
 import TaskAssignee from '../Task/TaskAssignee';
+import EditableNum from '../Task/EditableNum';
 
 function TaskCard({ id, setCurrentTask }) {
     const { selectedProject } = useAppSelection();
@@ -28,7 +29,7 @@ function TaskCard({ id, setCurrentTask }) {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading sprints</p>;
     const task = data?.task;
-
+    
     const updateValue = (name, value) => {
         updateTask({
             variables: {
@@ -61,6 +62,10 @@ function TaskCard({ id, setCurrentTask }) {
                 {task?.sprints.map(s => <span className="ml-2 text-sm text-gray-800" key={s?.id}>{s?.name}</span>)}
             </div>
             <div className="flex flex-col gap-2">
+                <h4 className='font-bold'>Points</h4>
+                <EditableNum name='points' value={task?.points || 0} updateValue={updateValue} />
+            </div>
+            <div className="flex flex-col gap-2">
                 <h4 className='font-bold'>Description</h4>
                 <Editable type={'textarea'} name='description' value={task?.description} updateValue={updateValue} />
             </div>
@@ -68,11 +73,6 @@ function TaskCard({ id, setCurrentTask }) {
                 <h3 className='font-semibold text-sm'>People</h3>
                 <div className='flex flex-row gap-1'>
                     <span className='text-gray-600 w-24'>Assignee</span>
-                    {/* <div className='flex flex-row'>
-                        {task?.assignee?.fullName && <span className='mr-4'>{task?.assignee?.fullName}</span>}
-                        {(task?.assignee?.id !== task?.reporter?.id) && <button className='text-blue-600'>Assign to me</button>}
-                    </div> */}
-
                     <TaskAssignee name='assignee' value={task?.assignee} updateValue={updateValue} />
                 </div>
                 <div className='flex flex-row gap-1'>

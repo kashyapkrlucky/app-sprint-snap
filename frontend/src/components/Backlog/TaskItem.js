@@ -13,8 +13,9 @@ const TaskItem = ({ t, onSelectTask }) => {
                 <NavLink to={`/task/${t?.ticketNumber}`} className={(t?.status === 'Done') ? 'line-through text-gray-400' : ''}>{t?.ticketNumber}</NavLink>
                 <span className='font-medium text-gray-700'>{t?.title}</span>
             </div>
-            <div className='w-1/4 flex flex-row gap-2 justify-end'>
+            <div className='w-1/4 flex flex-row gap-2 justify-end items-center'>
                 <TaskStatus taskId={t?.id} currentStatus={t?.status} type={'small'} />
+                <span className='w-5 h-5 rounded-full text-xs font-bold bg-gray-100 flex flex-row items-center justify-center'>{t?.points > 0 ? t?.points : ''}</span>
                 {(t?.assignee) ? <Avatar size={'xs'} name={t?.assignee?.fullName} /> : <UserCircleIcon className='w-6 h-6' title='Not assigned' />}
             </div>
         </div>
