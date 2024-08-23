@@ -1,32 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Layout from '../components/Layout';
 import { useParams } from 'react-router-dom';
 import { GET_TASK_BY_NUMBER } from '../graphql/queries';
 import { useMutation, useQuery } from '@apollo/client';
 import DateFromNow from '../shared/DateFromNow';
-import TaskIcon from '../components/TaskIcon';
-import TextEditor from '../components/TextEditor';
+import TaskIcon from '../components/Task/TaskIcon';
+import TaskComments from '../components/Task/TaskComments';
 import Editable from '../components/Task/Editable';
-import TaskStatus from '../components/TaskStatus';
-import { UPDATE_TASK } from '../graphql/mutations';
-import { useAppSelection } from '../contexts/AppSelectionContext';
+import TaskStatus from '../components/Task/TaskStatus';
+import { CREATE_COMMENT, UPDATE_TASK } from '../graphql/mutations';
+import { AuthContext } from '../contexts/AuthContext';
 
 const TaskDescriptionPage = () => {
     const { id } = useParams();
-    const { selectedProject } = useAppSelection();
-
+    const { user } = useContext(AuthContext);
+    console.log(user);
+    
     const { loading, error, data } = useQuery(GET_TASK_BY_NUMBER, {
         variables: { ticketNumber: id, skip: !id },
     });
 
     const [updateTask] = useMutation(UPDATE_TASK, {
-        variables: { projectId: selectedProject?.id, skip: !selectedProject?.id },
+        refetchQueries: [{ query: GET_TASK_BY_NUMBER, variables: { ticketNumber: id, skip: !id } }]
     });
-
-    const submitComment = (text) => {
-        console.log(text);
-    }
-
+    const [createComment] = useMutation(CREATE_COMMENT, {
+        refetchQueries: [{ query: GET_TASK_BY_NUMBER, variables: { ticketNumber: id, skip: !id } }]
+    });
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading projects in home</p>;
@@ -39,6 +38,17 @@ const TaskDescriptionPage = () => {
                 id: task?.id,
                 [name]: value
             }
+        })
+    }
+
+    const submitComment = (content) => {
+        const payload = {
+            content,
+            task: task?.id,
+            author: user?.id
+        }
+        createComment({
+            variables: payload
         })
     }
 
@@ -59,14 +69,10 @@ const TaskDescriptionPage = () => {
                     <div className="flex flex-row gap-4 items-center text-sm">
                         <TaskStatus taskId={task?.id} currentStatus={task?.status} />
                     </div>
-                    <div className="mt-1 mb-1">
-                        <span className="text-sm font-medium text-gray-700">Sprints:</span>
-                        {task?.sprints.map(s => <span className="ml-2 text-sm text-gray-800" key={s?.id}>{s?.name}</span>)}
-                    </div>
+
                     <div className="flex flex-col gap-2">
                         <h4 className='font-bold'>Description</h4>
                         <Editable type={'textarea'} name='description' value={task?.description} updateValue={updateValue} />
-
                     </div>
 
 
@@ -74,16 +80,9 @@ const TaskDescriptionPage = () => {
                     {/* Comments Section */}
                     <div className="mt-4 mb-4">
                         <h2 className="text-lg font-semibold mb-4">Comments</h2>
-                        <ul className="space-y-4 mb-4">
-                            {task?.comments?.map((comment) => (
-                                <li key={comment?.id} className="border-b border-gray-200 pb-2">
-                                    <p className="text-sm text-gray-500">{comment?.author} - {comment?.date}</p>
-                                    <p className="text-gray-700">{comment?.content}</p>
-                                </li>
-                            ))}
-                        </ul>
+
                         <div className='flex flex-col gap-4 items-start'>
-                            <TextEditor submitComment={submitComment} />
+                            <TaskComments comments={task?.comments} submitComment={submitComment} />
                         </div>
                     </div>
                 </div>
@@ -116,6 +115,10 @@ const TaskDescriptionPage = () => {
 
                     <div className='flex flex-col gap-1'>
                         <h3 className='font-medium text-sm'>Agile</h3>
+                        <div className="mt-1 mb-1">
+                            <span className="text-sm font-medium text-gray-700">Sprints:</span>
+                            {task?.sprints.map(s => <span className="ml-2 text-sm text-gray-800" key={s?.id}>{s?.name}</span>)}
+                        </div>
                     </div>
 
                     {/* Subtasks */}

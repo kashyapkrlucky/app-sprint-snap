@@ -1,7 +1,8 @@
 import { BoldIcon, ItalicIcon, UnderlineIcon } from "@heroicons/react/24/outline";
 import React, { useRef, useState } from "react";
+import DateFromNow from "../../shared/DateFromNow";
 
-const TextEditor = ({ submitComment }) => {
+const TaskComments = ({ comments = [], submitComment }) => {
     const editorRef = useRef(null);
     const [selectedStyle, setSelectedStyle] = useState("");
 
@@ -34,6 +35,16 @@ const TextEditor = ({ submitComment }) => {
 
     return (
         <>
+            <div className="w-full flex flex-col gap-4 space-y-4 mb-4">
+                {comments?.map((comment) => (
+                    <div key={comment?.id} className="border-b border-gray-200 pb-2">
+                        <div className="text-xs font-bold text-gray-500">
+                            <span>{comment?.author?.fullName}</span> - <DateFromNow value={comment?.createdAt} />
+                        </div>
+                        <div className="text-gray-700">{comment?.content}</div>
+                    </div>
+                ))}
+            </div>
             <div className="w-full border rounded-md">
                 <div className="flex flex-row border-b">
                     {buttons.map(btn => (
@@ -65,4 +76,4 @@ const TextEditor = ({ submitComment }) => {
     );
 };
 
-export default TextEditor;
+export default TaskComments;

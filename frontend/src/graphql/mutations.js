@@ -111,6 +111,21 @@ export const UPDATE_TASK_STATUS = gql`
     }
   }
 `
+export const CREATE_COMMENT = gql`
+  mutation CreateComment($content: String!, $task: ID!, $author: ID!) {
+    createComment(content: $content, task: $task, author: $author) {
+      id
+      content
+    }
+  }
+`
+export const DELETE_COMMENT = gql`
+  mutation DeleteComment($id: ID!) {
+    deleteComment(id: $id) {
+      id
+    }
+  }
+`
 
 // mutation DeleteProject($id: ID!) {
 //   deleteProject(id: $id) {
@@ -149,20 +164,8 @@ export const UPDATE_TASK_STATUS = gql`
 // }
 
 
-// mutation CreateComment($content: String!, $taskId: ID!, $userId: ID!) {
-//   createComment(content: $content, taskId: $taskId, userId: $userId) {
-//     id
-//     content
-//     task {
-//       id
-//       title
-//     }
-//     user {
-//       id
-//       fullName
-//     }
-//   }
-// }
+
+
 
 // mutation UpdateComment($id: ID!, $content: String!) {
 //   updateComment(id: $id, content: $content) {
@@ -170,13 +173,6 @@ export const UPDATE_TASK_STATUS = gql`
 //     content
 //   }
 // }
-
-// mutation DeleteComment($id: ID!) {
-//   deleteComment(id: $id) {
-//     id
-//   }
-// }
-
 
 // mutation CreateNotification($message: String!, $userId: ID!) {
 //   createNotification(message: $message, userId: $userId) {

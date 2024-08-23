@@ -131,7 +131,7 @@ const typeDefs = gql`
     
     createComment(content: String!, author: ID, task: ID): Comment
     updateComment(id: ID!, content: String): Comment
-    deleteComment(id: ID!): Comment
+    deleteComment(id: ID!): ID
 
     createNotification(recipient: ID!, type: String!, message: String!, isRead: Boolean, relatedTask: ID, relatedProject: ID, createdBy: ID): Notification
     updateNotification(id: ID!, isRead: Boolean): Notification

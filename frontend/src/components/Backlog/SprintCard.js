@@ -56,8 +56,6 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
     }
 
     const onSelectTask = id => {
-        console.log(id);
-
         setCurrentTask(id);
     }
 
@@ -120,7 +118,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                 {
                     sprint?.tasks?.length > 0 ?
                         sprint?.tasks.map(t => (
-                            <TaskItem t={t} key={t?.id} onSelectTask={onSelectTask} />
+                            <TaskItem t={t} key={t?.id} onSelectTask={() => onSelectTask(t?.id)} />
                         )) :
                         <div className='w-full border-2 border-dashed border-gray-300 p-2 rounded-md flex flex-row text-xs justify-center items-center text-gray-400 select-none'>No tickets yet...</div>
                 }

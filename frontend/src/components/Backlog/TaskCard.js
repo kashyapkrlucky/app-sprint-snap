@@ -1,16 +1,16 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React from 'react'
 import { GET_SPRINTS_WITH_TASKS, GET_TASK } from '../../graphql/queries';
-import TaskIcon from '../TaskIcon';
+import TaskIcon from '../Task/TaskIcon';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import TaskStatus from '../TaskStatus';
-import TextEditor from '../TextEditor';
+import TaskStatus from '../Task/TaskStatus';
 import DateFromNow from '../../shared/DateFromNow';
 import Editable from '../Task/Editable';
 import { UPDATE_TASK } from '../../graphql/mutations';
 import { useAppSelection } from '../../contexts/AppSelectionContext';
 import TaskAssignee from '../Task/TaskAssignee';
 import EditableNum from '../Task/EditableNum';
+import TaskComments from '../Task/TaskComments';
 
 function TaskCard({ id, setCurrentTask }) {
     const { selectedProject } = useAppSelection();
@@ -29,6 +29,7 @@ function TaskCard({ id, setCurrentTask }) {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading sprints</p>;
     const task = data?.task;
+    console.log(task);
     
     const updateValue = (name, value) => {
         updateTask({
@@ -94,16 +95,8 @@ function TaskCard({ id, setCurrentTask }) {
 
             <div className="mt-4 mb-4">
                 <h2 className="text-lg font-semibold mb-4">Comments</h2>
-                <ul className="space-y-4 mb-4">
-                    {task?.comments?.map((comment) => (
-                        <li key={comment?.id} className="border-b border-gray-200 pb-2">
-                            <p className="text-sm text-gray-500">{comment?.author} - {comment?.date}</p>
-                            <p className="text-gray-700">{comment?.content}</p>
-                        </li>
-                    ))}
-                </ul>
                 <div className='flex flex-col gap-4 items-start'>
-                    <TextEditor submitComment={submitComment} />
+                    <TaskComments comments={task?.comments} submitComment={submitComment} />
                 </div>
             </div>
         </div>

@@ -99,6 +99,15 @@ export const GET_TASK = gql`
       createdAt
       updatedAt   
       points
+      comments {
+        id
+        content
+        createdAt
+        author {
+           id
+           fullName
+        }
+      }
     }
   }
 `;
@@ -129,7 +138,16 @@ export const GET_TASK_BY_NUMBER = gql`
       ticketNumber
       createdAt
       updatedAt  
-      points           
+      points
+      comments {
+        id
+        content
+        createdAt
+        author {
+           id
+           fullName
+        }
+      }        
     }
   }
 `;

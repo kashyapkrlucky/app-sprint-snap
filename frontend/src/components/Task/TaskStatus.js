@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { UPDATE_TASK_STATUS } from '../graphql/mutations'; // Import the mutation
+import { UPDATE_TASK_STATUS } from '../../graphql/mutations'; // Import the mutation
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useAppSelection } from '../contexts/AppSelectionContext';
+import { useAppSelection } from '../../contexts/AppSelectionContext';
 
 const TaskStatus = ({ taskId, currentStatus, type }) => {
     const { selectedProject } = useAppSelection();

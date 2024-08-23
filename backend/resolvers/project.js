@@ -2,6 +2,7 @@ const Project = require('../models/Project');
 const Sprint = require('../models/Sprint');
 const Board = require('../models/Board');
 const Task = require('../models/Task');
+const Comment = require('../models/Comment');
 const Notification = require('../models/Notification');
 const { default: mongoose } = require('mongoose');
 
@@ -54,8 +55,30 @@ const projectResolver = {
             status,
             assignee: userId,
         }).populate('assignee').populate('reporter').populate('project'),
-        taskByNumber: async (parent, { ticketNumber }) => await Task.findOne({ ticketNumber }).populate('assignee').populate('reporter').populate('sprints'),
-        task: async (parent, { id }) => await Task.findById(id).populate('assignee').populate('reporter').populate('sprints'),
+        taskByNumber: async (parent, { ticketNumber }) => await Task.findOne({ ticketNumber })
+            .populate('assignee')
+            .populate('reporter')
+            .populate('sprints')
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    model: 'User',
+                },
+                // options: { sort: { createdAt: -1 } }
+            }),
+        task: async (parent, { id }) => await Task.findById(id)
+            .populate('assignee')
+            .populate('reporter')
+            .populate('sprints')
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    model: 'User',
+                },
+                // options: { sort: { createdAt: -1 } }
+            }),
         comments: () => Comment.find().populate('author').populate('task'),
         comment: (parent, { id }) => Comment.findById(id).populate('author').populate('task'),
         notifications: () => Notification.find().populate('recipient').populate('relatedTask').populate('relatedProject').populate('createdBy'),
@@ -230,15 +253,46 @@ const projectResolver = {
                 path: 'columns.toDo columns.inProgress columns.review columns.done',
             });
         },
-        createComment: async (parent, args) => {
-            const comment = new Comment(args);
-            return comment.save();
+        createComment: async (parent, { content, author, task }) => {
+
+            if (!author) throw new Error('Not authenticated');
+
+            const item = await Task.findById(task);
+            if (!item) throw new Error('task not found');
+
+            const comment = new Comment({ content, task, author });
+
+            const saved = await comment.save();
+            item.comments.push(saved.id);
+            await item.save();
+
+            return saved;
         },
         updateComment: async (parent, { id, content }) => {
             return Comment.findByIdAndUpdate(id, { content }, { new: true });
         },
         deleteComment: async (parent, { id }) => {
-            return Comment.findByIdAndDelete(id);
+
+            // Find the reply
+            const comment = await Comment.findById(id);
+            if (!comment) {
+                throw new Error('comment not found');
+            }
+
+            // Check if the user is the author of the reply
+            // if (comment.author.toString() !== user.id) {
+            //     throw new Error('You do not have permission to delete this reply');
+            // }
+
+            // Remove the reply from the discussion and delete the reply document
+            await Task.findByIdAndUpdate(
+                comment?.task,
+                { $pull: { comments: id } }
+            );
+
+            await Comment.findByIdAndRemove(id);
+
+            return { id };
         },
         createNotification: async (parent, args) => {
             const notification = new Notification(args);

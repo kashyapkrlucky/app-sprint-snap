@@ -1,9 +1,9 @@
 import React from 'react';
-import TaskIcon from '../TaskIcon';
+import TaskIcon from '../Task/TaskIcon';
 import Avatar from '../../shared/Avatar';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { NavLink } from "react-router-dom";
-import TaskStatus from '../TaskStatus';
+import TaskStatus from '../Task/TaskStatus';
 
 const TaskItem = ({ t, onSelectTask }) => {
     return (
