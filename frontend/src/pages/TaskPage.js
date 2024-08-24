@@ -10,11 +10,11 @@ import Editable from '../components/Task/Editable';
 import TaskStatus from '../components/Task/TaskStatus';
 import { CREATE_COMMENT, UPDATE_TASK } from '../graphql/mutations';
 import { AuthContext } from '../contexts/AuthContext';
+import Loading from '../shared/Loading';
 
 const TaskDescriptionPage = () => {
     const { id } = useParams();
     const { user } = useContext(AuthContext);
-    console.log(user);
     
     const { loading, error, data } = useQuery(GET_TASK_BY_NUMBER, {
         variables: { ticketNumber: id, skip: !id },
@@ -27,7 +27,7 @@ const TaskDescriptionPage = () => {
         refetchQueries: [{ query: GET_TASK_BY_NUMBER, variables: { ticketNumber: id, skip: !id } }]
     });
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Loading/>;
     if (error) return <p>Error loading projects in home</p>;
 
     const task = data?.taskByNumber;

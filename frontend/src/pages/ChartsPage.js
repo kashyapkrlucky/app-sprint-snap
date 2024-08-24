@@ -4,7 +4,7 @@ import Layout from '../components/Layout'
 function ChartsPage() {
     return (
         <Layout>
-            ChartsPage
+            Charts
         </Layout>
     )
 }

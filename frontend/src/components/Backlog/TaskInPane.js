@@ -1,30 +1,32 @@
 import { useMutation, useQuery } from '@apollo/client';
-import React from 'react'
+import React, { useContext } from 'react'
 import { GET_SPRINTS_WITH_TASKS, GET_TASK } from '../../graphql/queries';
 import TaskIcon from '../Task/TaskIcon';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import TaskStatus from '../Task/TaskStatus';
 import DateFromNow from '../../shared/DateFromNow';
 import Editable from '../Task/Editable';
-import { UPDATE_TASK } from '../../graphql/mutations';
+import { CREATE_COMMENT, UPDATE_TASK } from '../../graphql/mutations';
 import { useAppSelection } from '../../contexts/AppSelectionContext';
 import TaskAssignee from '../Task/TaskAssignee';
 import EditableNum from '../Task/EditableNum';
 import TaskComments from '../Task/TaskComments';
+import { AuthContext } from '../../contexts/AuthContext';
 
-function TaskCard({ id, setCurrentTask }) {
+function TaskInPane({ id, setCurrentTask }) {
     const { selectedProject } = useAppSelection();
     const { loading, error, data } = useQuery(GET_TASK, {
         variables: { id: id, skip: !id },
     });
 
+    const { user } = useContext(AuthContext);
+
     const [updateTask] = useMutation(UPDATE_TASK, {
         refetchQueries: [{ query: GET_SPRINTS_WITH_TASKS, variables: { projectId: selectedProject?.id } }]
     });
-
-    const submitComment = (text) => {
-        console.log(text);
-    }
+    const [createComment] = useMutation(CREATE_COMMENT, {
+        refetchQueries: [{ query: GET_TASK, variables: { id: id, skip: !id } }]
+    });
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading sprints</p>;
@@ -95,11 +97,11 @@ function TaskCard({ id, setCurrentTask }) {
             <div className="mt-4 mb-4">
                 <h2 className="text-lg font-semibold mb-4">Comments</h2>
                 <div className='flex flex-col gap-4 items-start'>
-                    <TaskComments comments={task?.comments} submitComment={submitComment} />
+                    <TaskComments task={task} user={user} comments={task?.comments} createComment={createComment} />
                 </div>
             </div>
         </div>
     )
 }
 
-export default TaskCard
+export default TaskInPane

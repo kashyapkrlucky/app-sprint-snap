@@ -6,6 +6,26 @@ const Comment = require('../models/Comment');
 const Notification = require('../models/Notification');
 const { default: mongoose } = require('mongoose');
 
+const generateBurndownData = (sprint) => {
+    // Example: Simplified function to generate burndown data
+    // You can customize this based on your specific data and requirements
+    const startDate = new Date(sprint.startDate);
+    const endDate = new Date(sprint.endDate);
+    const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    const data = [];
+
+    for (let i = 0; i <= totalDays; i++) {
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + i);
+
+        const remainingTasks = sprint.tasks.filter(task => 
+            !task.completed || new Date(task.completedDate) > date).length;
+
+        data.push({ date: date.toISOString().split('T')[0], remainingTasks });
+    }
+
+    return data;
+};
 const projectResolver = {
     Query: {
         projects: async (_, { userId }) => {
@@ -90,6 +110,12 @@ const projectResolver = {
         comment: (parent, { id }) => Comment.findById(id).populate('author').populate('task'),
         notifications: () => Notification.find().populate('recipient').populate('relatedTask').populate('relatedProject').populate('createdBy'),
         notification: (parent, { id }) => Notification.findById(id).populate('recipient').populate('relatedTask').populate('relatedProject').populate('createdBy'),
+
+        getBurndownData: async (_, { sprintId }) => {
+            const sprint = await Sprint.findById(sprintId).populate('tasks');
+            const burndownData = generateBurndownData(sprint);
+            return burndownData;
+        },
     },
     Mutation: {
         createProject: async (parent, args) => {
@@ -154,6 +180,13 @@ const projectResolver = {
                 throw new Error('End date must be in the past or today for Completed sprints');
             }
 
+            if (status === 'In Progress') {
+                const sprint = await Sprint.findById(sprintId).populate('project');
+                const project = await Project.findById(sprint?.project);
+                project.activeSprint = sprintId;
+                project.save();
+            }
+
             // Update the sprint with the new data
             return await Sprint.findByIdAndUpdate(
                 sprintId,
@@ -178,6 +211,11 @@ const projectResolver = {
             await Sprint.findByIdAndUpdate(newSprintId, {
                 $addToSet: { tasks: { $each: taskIds } } // $addToSet to avoid duplicates
             });
+
+            const sprint = await Sprint.findById(sprintId).populate('project');
+            const project = await Project.findById(sprint?.project);
+            project.activeSprint = null;
+            project.save();
             return true;
         },
         deleteSprint: async (_, { sprintId }) => {
@@ -328,9 +366,9 @@ const projectResolver = {
         },
         deleteNotification: async (parent, { id }) => {
             return Notification.findByIdAndDelete(id);
-        },
-
+        }
     }
 };
+
 
 module.exports = projectResolver;

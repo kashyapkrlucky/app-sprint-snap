@@ -2,7 +2,7 @@ import { BoldIcon, ItalicIcon, UnderlineIcon } from "@heroicons/react/24/outline
 import React, { useRef, useState } from "react";
 import DateFromNow from "../../shared/DateFromNow";
 
-const TaskComments = ({ comments = [], submitComment }) => {
+const TaskComments = ({ task, user, comments = [], createComment }) => {
     const editorRef = useRef(null);
     const [selectedStyle, setSelectedStyle] = useState("");
 
@@ -29,7 +29,14 @@ const TaskComments = ({ comments = [], submitComment }) => {
 
     const handleSubmit = () => {
         if (editorRef.current) {
-            submitComment(editorRef.current.innerHTML);
+            const payload = {
+                content: editorRef.current.innerHTML,
+                task: task?.id,
+                author: user?.id
+            }
+            createComment({
+                variables: payload
+            })
         }
     };
 

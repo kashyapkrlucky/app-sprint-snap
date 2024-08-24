@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ProjectList from '../components/Projects/ProjectList';
 import Layout from '../components/Layout';
 import { GET_PROJECTS } from '../graphql/queries';
 import { useQuery } from '@apollo/client';
 import TopBar from '../components/Layout/TopBar';
+import { AuthContext } from '../contexts/AuthContext';
+import Loading from '../shared/Loading';
 
 const ProjectPage = () => {
     const [projects, setProjects] = useState([]);
+    const { user } = useContext(AuthContext);
 
     const handleEditProject = (updatedProject) => {
         setProjects(
@@ -21,9 +24,9 @@ const ProjectPage = () => {
     };
 
 
-    const { loading, error, data } = useQuery(GET_PROJECTS);
+    const { loading, error, data } = useQuery(GET_PROJECTS, {variables: { userId: user?.id }});
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Loading/>;
     if (error) return <p>Error loading projects</p>;
     return (
         <main>

@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskCard from './TaskCard';
 
-const TaskBoard = ({ list }) => {
+const TaskBoard = ({ list, updateTaskStatus }) => {
   const [tasks, setTasks] = useState(list);
+
+  
 
   const onDragEnd = (result) => {
     const { destination, source } = result;
@@ -15,13 +17,18 @@ const TaskBoard = ({ list }) => {
     const dIndex = tasks?.findIndex(t => t?.id === destination.droppableId);
     const destinationColumn = tasks[dIndex];
     const [movedTask] = sourceColumn?.list?.splice(source.index, 1);
-
     destinationColumn?.list?.splice(destination.index, 0, movedTask);
     const items = [...tasks];
     items[sIndex] = sourceColumn;
     items[dIndex] = destinationColumn;
 
     setTasks([...items]);
+
+    updateTaskStatus({
+      variables: {
+        taskId: movedTask?.id, status: destinationColumn?.name
+      }
+    })
   };
 
 
@@ -30,7 +37,7 @@ const TaskBoard = ({ list }) => {
       <div className="flex space-x-4">
         {
           list?.map(l => (
-            <Droppable droppableId={l?.id}>
+            <Droppable droppableId={l?.id} key={l?.id}>
               {(provided) => (
                 <div
                   {...provided.droppableProps}

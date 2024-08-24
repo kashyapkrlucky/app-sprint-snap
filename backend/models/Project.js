@@ -11,7 +11,8 @@ const projectSchema = new Schema({
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
   notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
   initials: { type: String },
-  ticketCount: { type: Number, default: 0 }
+  ticketCount: { type: Number, default: 0 },
+  activeSprint: { type: Schema.Types.ObjectId }
 }, { timestamps: true });
 
 const Project = mongoose.model('Project', projectSchema);

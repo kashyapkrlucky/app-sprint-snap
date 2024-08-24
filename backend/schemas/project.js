@@ -14,6 +14,7 @@ const typeDefs = gql`
     createdAt: String
     updatedAt: String
     initials: String
+    activeSprint: ID
   }
 
   type Sprint {
@@ -91,6 +92,11 @@ const typeDefs = gql`
     updatedAt: String
   }
 
+  type BurndownPoint {
+    date: String!
+    remainingTasks: Int!
+}
+
   type Query {
     projects(userId: ID!): [Project]
     project(id: ID!): Project
@@ -106,6 +112,7 @@ const typeDefs = gql`
     comment(id: ID!): Comment
     notifications: [Notification]
     notification(id: ID!): Notification
+    getBurndownData(sprintId: ID!): [BurndownPoint]
   }
 
   type Mutation {

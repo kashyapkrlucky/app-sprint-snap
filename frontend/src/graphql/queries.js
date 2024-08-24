@@ -24,6 +24,7 @@ export const GET_PROJECTS = gql`
         fullName
         avatar
       }
+      activeSprint
     }
   }
 `;
@@ -253,4 +254,15 @@ export const GET_BOARD = gql`
       }
     }
   }
+`;
+
+
+
+export const GET_BURNDOWN_DATA = gql`
+    query GetBurndownData($sprintId: ID!) {
+        getBurndownData(sprintId: $sprintId) {
+            date
+            remainingTasks
+        }
+    }
 `;
