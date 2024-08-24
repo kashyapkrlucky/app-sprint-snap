@@ -84,8 +84,8 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                     sprint ?
                         <div className='w-full flex flex-row justify-between items-center'>
                             <div>
-                                <div className='text-base font-semibold capitalize'>{sprint?.name}</div>
-                                {!['Not Started'].includes(sprint?.status) && <div className='flex flex-row items-center gap-1 text-sm capitalize'>
+                                <div className='text-sm lg:text-base font-semibold capitalize'>{sprint?.name}</div>
+                                {!['Not Started'].includes(sprint?.status) && <div className='flex flex-row items-center gap-1 text-xs lg:text-sm capitalize'>
                                     <Moment format="DD/MM/YYYY">{now}</Moment>
                                     <span>--</span>
                                     <Moment format="DD/MM/YYYY">{twoWeeksLater}</Moment>
@@ -94,8 +94,8 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                             </div>
                             {sprint?.name !== 'Backlog' && <div className='flex flex-row gap-2 items-center'>
                                 <div className='flex flex-row gap-2'>
-                                    <div className='bg-blue-600 text-white rounded-full flex flex-row justify-center items-center w-6 h-6 text-xs font-bold'>{pendingPoints}</div>
-                                    <div className='bg-green-600 text-white rounded-full flex flex-row justify-center items-center w-6 h-6 text-xs font-bold'>{donePoints}</div>
+                                    <div className='bg-blue-600 text-white rounded-full flex flex-row justify-center items-center w-4 h-4 lg:w-6 lg:h-6 text-xs font-bold'>{pendingPoints}</div>
+                                    <div className='bg-green-600 text-white rounded-full flex flex-row justify-center items-center w-4 h-4 lg:w-6 lg:h-6 text-xs font-bold'>{donePoints}</div>
                                 </div>
 
                                 {
@@ -117,7 +117,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
 
                                 {
                                     sprint?.status === 'Completed' &&
-                                    <button className='border bg-white px-4 py-1 text-sm rounded-md'>Completed</button>
+                                    <div className='border bg-white px-4 py-1 text-sm rounded-md'>Completed</div>
                                 }
                             </div>}
                         </div> :
