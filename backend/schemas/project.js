@@ -125,6 +125,7 @@ const typeDefs = gql`
     createSprint(name: String!, projectId: ID!): Sprint!
     updateSprint(sprintId: ID!, name: String, status: String, startDate: String, endDate: String): Sprint!
     completeSprint(sprintId: ID!, newSprintId: ID!, taskIds: [ID]): Boolean
+    updateSprintTask(sprintId: ID, newSprintId: ID, taskId: ID): Boolean
     deleteSprint(sprintId: ID!): Boolean!
 
     createBoard(name: String!, projectId: ID!): Board!

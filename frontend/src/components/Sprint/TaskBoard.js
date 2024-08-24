@@ -4,9 +4,6 @@ import TaskCard from './TaskCard';
 
 const TaskBoard = ({ list, updateTaskStatus }) => {
   const [tasks, setTasks] = useState(list);
-
-  
-
   const onDragEnd = (result) => {
     const { destination, source } = result;
 

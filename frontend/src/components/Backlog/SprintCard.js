@@ -4,6 +4,7 @@ import TaskItem from './TaskItem';
 import Moment from 'react-moment';
 import moment from 'moment';
 import Modal from '../../shared/Modal';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 function SprintCard({ sprint, selectedProject, closeAction, updateSprint, createSprint, activeSprint, setCurrentTask, futureSprints, completeSprint }) {
     const [sprintName, setSprintName] = useState('');
@@ -27,6 +28,16 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
         setSprintName('');
         closeAction();
     }
+
+    // const onDragEnd = (result) => {
+    //     const { destination, source } = result;
+
+    //     if (!destination) return;
+
+    //     console.log(source, destination);
+
+    // }
+
     useEffect(() => {
         const addPoints = (tasks, type) => {
             const points = tasks?.reduce((a, x) => {
@@ -72,10 +83,10 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
             newSprintId,
             taskIds: pendingTickets
         }
-        console.log(payload);
         completeSprint({
             variables: payload
         })
+        setIsModalOpen(false);
     }
     return (
         <div className='flex flex-col gap-2 bg-gray-100 border p-4 rounded-md'>
@@ -83,13 +94,13 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                 {
                     sprint ?
                         <div className='w-full flex flex-row justify-between items-center'>
-                            <div>
-                                <div className='text-sm lg:text-base font-semibold capitalize'>{sprint?.name}</div>
+                            <div className='flex flex-col gap-2'>
+                                <div className='text-sm lg:text-lg font-semibold capitalize'>{sprint?.name}</div>
                                 {!['Not Started'].includes(sprint?.status) && <div className='flex flex-row items-center gap-1 text-xs lg:text-sm capitalize'>
                                     <Moment format="DD/MM/YYYY">{now}</Moment>
                                     <span>--</span>
                                     <Moment format="DD/MM/YYYY">{twoWeeksLater}</Moment>
-                                    {sprint?.status === 'In Progress' && <div className='ml-4 text-xs font-semibold trackin-widest bg-green-700 text-white rounded px-2 py-1'>ACTIVE</div>}
+                                    {sprint?.status === 'In Progress' && <div className='ml-4 text-xs font-medium trackin-widest bg-green-700 text-white rounded px-2 py-0.5'>ACTIVE</div>}
                                 </div>}
                             </div>
                             {sprint?.name !== 'Backlog' && <div className='flex flex-row gap-2 items-center'>
@@ -132,15 +143,29 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                         </div>
                 }
             </div>
-            <div className='flex flex-col divide-y divide-gray-200 bg-gray-50 rounded-md'>
-                {
-                    sprint?.tasks?.length > 0 ?
-                        sprint?.tasks.map(t => (
-                            <TaskItem t={t} key={t?.id} onSelectTask={() => onSelectTask(t?.id)} />
-                        )) :
-                        <div className='w-full border-2 border-dashed border-gray-300 p-2 rounded-md flex flex-row text-xs justify-center items-center text-gray-400 select-none'>No tickets yet...</div>
-                }
-            </div>
+            <Droppable droppableId={sprint?.name === 'Backlog' ? 'backlog' : sprint?.id} key={sprint?.id}>
+                {(provided) => (
+
+                    <div className='flex flex-col divide-y divide-gray-200 bg-gray-50 rounded-md' {...provided.droppableProps}
+                        ref={provided.innerRef}>
+                        {
+                            sprint?.tasks?.length > 0 ?
+                                sprint?.tasks.map((t, index) => (
+
+                                    <Draggable key={t.id} draggableId={t.id} index={index}>
+                                        {(provided) => (
+                                            <TaskItem t={t} key={t?.id} provided={provided} onSelectTask={() => onSelectTask(t?.id)} />
+                                        )}
+
+                                    </Draggable>
+                                )) :
+                                <div className='w-full border-2 border-dashed border-gray-300 p-2 rounded-md flex flex-row text-xs justify-center items-center text-gray-400 select-none'>No tickets yet...</div>
+                        }
+                        {provided.placeholder}
+                    </div>
+
+                )}
+            </Droppable>
             <Modal title={`Complete Sprint`} isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); }}>
                 <div className='flex flex-col gap-4 items-start'>
                     <p>There are still some pending tasks in this sprint, please select a sprint or backlog to move this tickets</p>

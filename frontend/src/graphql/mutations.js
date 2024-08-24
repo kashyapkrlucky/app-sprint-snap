@@ -88,6 +88,12 @@ export const COMPLETE_SPRINT = gql`
   }
 `
 
+export const UPDATE_SPRINT_TASK = gql`
+  mutation UpdateSprintTask($sprintId: ID, $newSprintId: ID, $taskId: ID) {
+    updateSprintTask(sprintId: $sprintId, newSprintId: $newSprintId, taskId: $taskId)
+  }
+`
+
 export const CREATE_TASK = gql`
   mutation CreateTask($title: String!, $description: String!, $projectId: ID!, $priority: String, $reporter: ID!, $ticketType:String!, $sprintId: ID) {
     createTask(title: $title, description: $description, projectId: $projectId, priority: $priority, reporter: $reporter, ticketType: $ticketType, sprintId: $sprintId) {

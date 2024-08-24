@@ -18,7 +18,7 @@ const generateBurndownData = (sprint) => {
         const date = new Date(startDate);
         date.setDate(startDate.getDate() + i);
 
-        const remainingTasks = sprint.tasks.filter(task => 
+        const remainingTasks = sprint.tasks.filter(task =>
             !task.completed || new Date(task.completedDate) > date).length;
 
         data.push({ date: date.toISOString().split('T')[0], remainingTasks });
@@ -36,7 +36,7 @@ const projectResolver = {
             return await Sprint.find({ project: projectId }).sort({ createdAt: -1 });
         },
         sprintsWithTasks: async (_, { projectId }) => {
-            const items = await Sprint.find({ project: projectId })
+            const items = await Sprint.find({ project: projectId, status: { $in: ['Not Started', 'In Progress'] } })
                 .populate({
                     path: 'tasks',
                     populate: {
@@ -47,7 +47,7 @@ const projectResolver = {
                 }).sort({ createdAt: -1 });
 
             const unassignedTasks = await Task.find({ project: projectId, sprints: [] })
-                .populate('reporter');
+                .populate('assignee');
 
             items.push({
                 id: new mongoose.Types.ObjectId(),
@@ -216,6 +216,25 @@ const projectResolver = {
             const project = await Project.findById(sprint?.project);
             project.activeSprint = null;
             project.save();
+            return true;
+        },
+        updateSprintTask: async (_, { sprintId, newSprintId, taskId }) => {
+            if (newSprintId) {
+                await Task.findByIdAndUpdate(taskId, { $push: { sprints: newSprintId } });
+                await Sprint.findByIdAndUpdate(newSprintId, {
+                    $push: { tasks: taskId } // $addToSet to avoid duplicates
+                });
+                if (sprintId) {
+                    await Sprint.findByIdAndUpdate(sprintId, {
+                        $pull: { tasks: taskId }
+                    });
+                }
+            } else {
+                await Task.findByIdAndUpdate(taskId, { sprints: [] });
+                await Sprint.findByIdAndUpdate(sprintId, {
+                    $pull: { tasks: taskId }
+                });
+            }
             return true;
         },
         deleteSprint: async (_, { sprintId }) => {
