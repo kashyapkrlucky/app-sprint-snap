@@ -206,9 +206,19 @@ export const GET_SPRINT = gql`
       tasks {
         id
         title
-        ticketType
-        assignee
+        description
         status
+        priority
+        assignee {
+          id
+          fullName
+          avatar
+        }
+        ticketType
+        ticketNumber
+        createdAt
+        updatedAt   
+        points
       }
     }
   }

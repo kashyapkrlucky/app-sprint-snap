@@ -1,12 +1,6 @@
 import React from 'react';
 
-const SprintHeader = () => {
-  const sprint = {
-    name: 'Sprint 5 - Authentication Features',
-    startDate: '2024-08-01',
-    endDate: '2024-08-14',
-    progress: 65, // Percentage complete
-  };
+const SprintHeader = ({sprint}) => {
 
   return (
     <div className="bg-white shadow-md py-6 px-6 mb-4 flex flex-col md:flex-row justify-between items-center">

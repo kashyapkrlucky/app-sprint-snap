@@ -39,7 +39,14 @@ const projectResolver = {
             return items;
         },
         sprint: async (_, { sprintId }) => {
-            return await Sprint.findById(sprintId).populate('tasks');
+            return await Sprint.findById(sprintId).populate({
+                path: 'tasks',
+                populate: {
+                    path: 'assignee',
+                    model: 'User',
+                },
+                options: { sort: { createdAt: -1 } }
+            });
         },
         boards: async (_, { projectId }) => {
             return await Board.find({ project: projectId }).populate({

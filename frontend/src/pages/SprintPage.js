@@ -1,66 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import SprintList from '../components/Sprint/SprintList';
-import CreateSprint from '../components/Sprint/CreateSprint';
+import React from 'react';
+import TaskBoard from '../components/CurrentSprint/TaskBoard';
 import Layout from '../components/Layout';
+import { GET_SPRINT } from '../graphql/queries';
+import { useQuery } from '@apollo/client';
+import SprintHeader from '../components/Sprint/SprintHeader';
 
 const SprintPage = () => {
-    const [sprints, setSprints] = useState([]);
+  const { loading, error, data } = useQuery(GET_SPRINT, {
+    variables: { sprintId: '66c3aec6a905a7d06bfca2fa' },
+  });
 
-    useEffect(() => {
-      setSprints([
-        {
-          id: 'sprint1',
-          name: 'Sprint 1',
-          startDate: '2024-08-01',
-          endDate: '2024-08-15',
-          tasks: [
-            {
-              id: 'task1',
-              title: 'Task 1',
-              status: 'To Do',
-              assignee: { fullName: 'John Doe' },
-            },
-            {
-              id: 'task2',
-              title: 'Task 2',
-              status: 'In Progress',
-              assignee: { fullName: 'Jane Smith' },
-            },
-          ],
-        },
-        {
-          id: 'sprint2',
-          name: 'Sprint 2',
-          startDate: '2024-08-16',
-          endDate: '2024-08-30',
-          tasks: [
-            {
-              id: 'task3',
-              title: 'Task 3',
-              status: 'Done',
-              assignee: { fullName: 'Alice Johnson' },
-            },
-          ],
-        },
-      ])
-    }, [])
-    
-      
-    const [projects] = useState([
-        { id: 'project1', name: 'Project A' },
-        { id: 'project2', name: 'Project B' },
-    ]);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error loading sprints</p>;
+  const sprint = data?.sprint;
 
-    const handleCreateSprint = (newSprint) => {
-        setSprints([...sprints, { ...newSprint, id: sprints.length + 1, tasks: [] }]);
-    };
+  const tasksByStatus = [
+    { id: 'toDo', name: 'To Do', list: [] },
+    { id: 'inProgress', name: 'In Progress', list: [] },
+    { id: 'done', name: 'Done', list: [] },
+  ];
 
-    return (
-        <Layout>
-            <CreateSprint onSubmit={handleCreateSprint} projects={projects} />
-            <SprintList sprints={sprints} />
-        </Layout>
-    );
+  sprint?.tasks.forEach(task => {
+    const status = tasksByStatus.find(status => status.name === task.status);
+    if (status) {
+      status.list.push(task);
+    }
+  });
+  
+  console.log(tasksByStatus);
+
+  return (
+    <Layout>
+      <SprintHeader sprint={sprint}></SprintHeader>
+      {/* Task Board */}
+      <div className="flex flex-col px-4">
+        <TaskBoard list={tasksByStatus} />
+      </div>
+    </Layout>
+  );
 };
 
 export default SprintPage;

@@ -28,7 +28,7 @@ const Sidebar = () => {
                     <span className={`text-sm ${isOpen ? 'block' : 'hidden'}`}>Backlog</span>
                 </Link>
 
-                <Link to="/currentsprint" className="flex flex-row gap-2 items-center py-2 px-3 hover:bg-gray-700 transition-colors rounded-lg">
+                <Link to="/sprint/active" className="flex flex-row gap-2 items-center py-2 px-3 hover:bg-gray-700 transition-colors rounded-lg">
                     <QueueListIcon className='w-6 h-6' />
                     <span className={`text-sm ${isOpen ? 'block' : 'hidden'}`}>Active Sprints</span>
                 </Link>
