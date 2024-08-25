@@ -1,6 +1,17 @@
 import { gql } from "@apollo/client";
 
-// Project Queries
+// Profile Queries
+export const GET_USER = gql`
+  query GetUser($id: ID) {
+    getUser(id: $id) {
+      id
+      firstName
+      lastName
+      avatar
+    }
+  }
+`;
+
 export const SEARCH_USERS = gql`
   query SearchUsers($text: String) {
     searchUsers(text: $text) {

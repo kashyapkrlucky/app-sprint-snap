@@ -25,7 +25,7 @@ const TaskItem = ({ t, onSelectTask, provided }) => {
             <div className='w-1/4 flex flex-row gap-2 justify-end items-center'>
                 <span className={btnStyleSmall}>{t?.status}</span>
                 <span className='w-5 h-5 rounded-full text-xs font-bold bg-gray-100 flex flex-row items-center justify-center'>{t?.points > 0 ? t?.points : ''}</span>
-                {(t?.assignee) ? <Avatar size={'xs'} name={t?.assignee?.fullName} /> : <UserCircleIcon className='w-6 h-6' title='Not assigned' />}
+                {(t?.assignee) ? <Avatar user={t?.assignee} size='xs'/> : <UserCircleIcon className='w-6 h-6' title='Not assigned' />}
             </div>
         </div>
     );

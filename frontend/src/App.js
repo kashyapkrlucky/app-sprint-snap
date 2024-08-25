@@ -10,7 +10,7 @@ import ProjectPage from './pages/Projects';
 import SprintPage from './pages/SprintPage';
 import TaskDescriptionPage from './pages/TaskPage';
 import ChartsPage from './pages/ChartsPage';
-import SettingsPage from './pages/SettingsPage';
+import Profile from './pages/Profile';
 
 const PrivateRoute = () => {
   let auth = localStorage.getItem('token');
@@ -30,7 +30,7 @@ function App() {
           <Route path="/sprint/active" element={<SprintPage />} />
           <Route path="/backlog" element={<BacklogPage />} />
           <Route path="/charts" element={<ChartsPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/task/:id" element={<TaskDescriptionPage />} />
         </Route>
         <Route path="*" element={<NotFound />} />

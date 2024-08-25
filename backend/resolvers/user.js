@@ -80,13 +80,15 @@ const userResolvers = {
 
             return { token, user, profile };
         },
-        updatePicture: async (_, { avatar }, { user }) => {
+        updateUserInfo: async (_, { avatar, firstName, lastName }, { user }) => {
             if (!user) {
                 throw new Error('Not authenticated');
             }
 
             const updates = {};
             if (avatar) updates.avatar = avatar;
+            if (firstName) userUpdates.firstName = firstName;
+            if (lastName) userUpdates.lastName = lastName;
 
             const item = await User.findByIdAndUpdate(user.id, updates, { new: true });
 

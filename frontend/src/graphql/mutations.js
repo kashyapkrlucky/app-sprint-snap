@@ -36,6 +36,66 @@ export const SIGNUP_MUTATION = gql`
   }
 `;
 
+
+
+export const UPDATE_PROFILE = gql`
+  mutation UpdateProfile(
+    $firstName: String!,
+    $lastName: String!,
+    $city: String,
+    $country: String,
+    $tagline: String,
+    $phone: String,
+    $notifications: Boolean!
+    $theme: String!
+  ) {
+    updateProfile(
+      firstName: $firstName,
+      lastName: $lastName,
+      city: $city,
+      country: $country,
+      tagline: $tagline,
+      phone: $phone,
+      notifications: $notifications
+      theme: $theme
+    ) {
+      id
+      user {
+        firstName
+        lastName
+        fullName
+        avatar
+        email
+      }
+      city
+      country
+      tagline
+      phone
+      notifications
+      theme
+    }
+  }
+`;
+
+export const UPDATE_USER_INFO = gql`
+  mutation UpdateUserInfo(
+    $firstName: String,
+    $lastName: String,
+    $avatar: String,
+  ) {
+    updateUserInfo(
+      firstName: $firstName,
+      lastName: $lastName,
+      avatar: $avatar,
+    ) {
+      id
+      avatar
+    }
+  }
+`;
+
+
+
 export const CREATE_PROJECT = gql`
   mutation CreateProject($name: String!, $description: String!, $startDate:String, $endDate:String, $initials: String, $member: ID) {
     createProject(name: $name, description: $description, startDate:$startDate, endDate:$endDate, initials: $initials, member: $member) {

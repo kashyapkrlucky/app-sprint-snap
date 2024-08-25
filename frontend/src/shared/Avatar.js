@@ -1,8 +1,8 @@
 // components/Avatar.js
 import React from 'react';
 
-const Avatar = ({ imageUrl, name, size = 'md' }) => {
-  const baseStyle = 'border rounded-full border-gray-500 text-gray-600 flex items-center justify-center font-semibold';
+const Avatar = ({ user, size = 'md' }) => {
+  const baseStyle = 'border rounded-full border-gray-200 text-gray-600 flex items-center justify-center font-semibold';
 
   const sizeStyles = {
     xs: 'h-6 w-6 text-xs',
@@ -13,10 +13,10 @@ const Avatar = ({ imageUrl, name, size = 'md' }) => {
 
   return (
     <div className={`${baseStyle} ${sizeStyles[size]}`}>
-      {imageUrl ? (
-        <img className="rounded-full" src={imageUrl} alt={name} />
+      {user?.avatar ? (
+        <img className="rounded-full" src={'/avatars/' + user?.avatar} alt={user?.fullName} />
       ) : (
-        <span title={name}>{name ? name.charAt(0) : '?'}</span>
+        <span title={user?.fullName}>{user?.fullName ? user?.fullName.charAt(0) : '?'}</span>
       )}
     </div>
   );

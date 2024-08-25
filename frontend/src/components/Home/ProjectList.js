@@ -23,7 +23,7 @@ const ProjectList = ({ projects }) => {
                                 <div className="flex flex-row items-center gap-2">
                                     {project?.members?.map((member, index) => (
                                         <div key={index} className="flex items-center cursor-pointer">
-                                            <Avatar imageUrl={member?.avatar} name={member?.fullName} title={member?.fullName} />
+                                            <Avatar user={member} size='md'/>
                                         </div>
                                     ))}
                                     <div className='flex flex-row items-center'>

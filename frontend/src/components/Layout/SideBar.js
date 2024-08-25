@@ -37,11 +37,6 @@ const Sidebar = () => {
                     <ChartBarSquareIcon className='w-6 h-6' />
                     <span className={`text-sm ${isOpen ? 'block' : 'hidden'}`}>Charts</span>
                 </Link>
-
-                <Link to="/settings" className="flex flex-row gap-2 items-center py-2 px-3 hover:bg-gray-700 transition-colors rounded-lg">
-                    <Cog8ToothIcon className='w-6 h-6' />
-                    <span className={`text-sm ${isOpen ? 'block' : 'hidden'}`}>Settings</span>
-                </Link>
             </nav>
         </div>
     );

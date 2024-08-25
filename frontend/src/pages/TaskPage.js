@@ -13,6 +13,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import Loading from '../shared/Loading';
 import TaskPriority from '../components/Task/TaskPriority';
 import TaskAssignee from '../components/Task/TaskAssignee';
+import Avatar from '../shared/Avatar';
 
 const TaskDescriptionPage = () => {
     const { id } = useParams();
@@ -80,7 +81,7 @@ const TaskDescriptionPage = () => {
                         </div>
                         <div className='flex flex-row gap-1'>
                             <span className='text-gray-600 w-24'>Reporter</span>
-                            {task?.reporter?.fullName}
+                            <><Avatar user={task?.reporter} size='xs' /><span>{task?.reporter?.fullName}</span></>
                         </div>
                     </div>
                     <div className='flex flex-col gap-1'>

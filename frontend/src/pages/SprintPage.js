@@ -73,7 +73,7 @@ const SprintPage = () => {
 
   return (
     <Layout>
-      <SprintHeader sprint={sprint} points={points}></SprintHeader>
+      <SprintHeader sprint={sprint} points={points} members={selectedProject?.members}></SprintHeader>
       {/* Task Board */}
       <div className="flex flex-col px-4">
         <TaskBoard list={tasksByStatus} updateTaskStatus={updateTaskStatus} />

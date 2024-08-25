@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import ProjectDropdown from '../Projects/ProjectDropdown';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { Cog6ToothIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import Avatar from '../../shared/Avatar';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -17,8 +17,7 @@ const TopBar = () => {
 
     const navigate = useNavigate();
     const navigation = [
-        { name: 'My Profile', href: `/profile/${user && user.id}`, icon: <UserCircleIcon className='w-6 h-6' /> },
-        { name: 'Settings', href: '/settings', icon: <Cog6ToothIcon className='w-6 h-6' /> }
+        { name: 'My Profile', href: `/profile`, icon: <UserCircleIcon className='w-6 h-6' /> },
     ];
 
     const closeModal = () => {
@@ -60,13 +59,17 @@ const TopBar = () => {
                             <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                 <span className="absolute -inset-1.5" />
                                 <span className="sr-only">Open user menu</span>
-                                <div className='bg-white rounded-full'>{user && <Avatar imageUrl={user?.avatar} name={user?.fullName} size="md" />}</div>
+                                <div className='bg-white rounded-full'>{user && <Avatar user={user} size='md'/>}</div>
                             </MenuButton>
                         </div>
                         <MenuItems
                             transition
                             className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                         >
+                            <div className='flex flex-row gap-2 px-4 py-2 items-center border-b'>
+                                <Avatar user={user} size='sm'/>
+                                <span className='text-sm'>{user?.fullName}</span>
+                            </div>
                             {navigation.map((item) => (
                                 <MenuItem key={item.name}>
                                     <a

@@ -10,18 +10,20 @@ const TaskCard = ({ task }) => {
                 <div className='flex flex-row items-center gap-2'>
                     <TaskIcon type={task?.ticketType} />
                     <span>{task?.ticketNumber}</span>
-                    <TaskPriority type={task?.priority}/>
+                    <TaskPriority type={task?.priority} />
                 </div>
                 <div className='py-4'>
                     {task?.title}
                 </div>
-                <div>
-                    {task?.points}
+                <div className='flex flex-row justify-between'>
+                    <span className='w-4 h-4 lg:w-6 lg:h-6 bg-white border rounded-full flex flex-row justify-center items-center text-xs font-bold'>{task?.points} </span>
+                    {task?.assignee && <div className='flex flex-row gap-2 items-center'>
+                        <Avatar user={task?.assignee} size='sm'/>
+                        {/* <span className='text-xs'>{task?.assignee?.fullName}</span> */}
+                    </div>}
                 </div>
             </div>
-            <div>
-                {task?.assignee && <div className='flex flex-row gap-4'><Avatar size={'xs'} name={task?.assignee?.fullName} /><span>{task?.assignee?.fullName}</span></div>}
-            </div>
+
         </div>
     );
 };

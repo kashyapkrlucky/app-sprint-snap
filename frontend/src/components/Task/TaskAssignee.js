@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppSelection } from '../../contexts/AppSelectionContext';
+import Avatar from '../../shared/Avatar';
 
 const TaskAssignee = ({ name, value, updateValue }) => {
     const { selectedProject } = useAppSelection();
@@ -13,14 +14,14 @@ const TaskAssignee = ({ name, value, updateValue }) => {
     };
 
     return (
-        <div className="relative flex flex-col items-center text-base">
+        <div className="relative flex flex-col items-center">
             <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="text-blue-500 hover:text-blue-600"
+                className="flex flex-row gap-1 text-blue-500 hover:text-blue-600"
             >
-                {selectedUser ? selectedUser?.fullName : "Unassigned"}
+                {selectedUser ? <><Avatar user={selectedUser} size='xs' /><span>{selectedUser?.fullName}</span></> : "Unassigned"}
             </button>
-            
+
             {isDropdownOpen && (
                 <div className="absolute z-10 left-0 mt-6 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
                     <ul>
