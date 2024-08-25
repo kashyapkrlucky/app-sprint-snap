@@ -12,6 +12,7 @@ import TaskAssignee from '../Task/TaskAssignee';
 import EditableNum from '../Task/EditableNum';
 import TaskComments from '../Task/TaskComments';
 import { AuthContext } from '../../contexts/AuthContext';
+import TaskPriority from '../Task/TaskPriority';
 
 function TaskInPane({ id, setCurrentTask }) {
     const { selectedProject } = useAppSelection();
@@ -31,7 +32,7 @@ function TaskInPane({ id, setCurrentTask }) {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading sprints</p>;
     const task = data?.task;
-    
+
     const updateValue = (name, value) => {
         updateTask({
             variables: {
@@ -48,7 +49,7 @@ function TaskInPane({ id, setCurrentTask }) {
                     <div className='flex flex-row items-center gap-2'>
                         <TaskIcon type={task?.ticketType} />
                         <span>{task?.ticketNumber}</span>
-                        <span className="ml-2 text-sm text-yellow-500 font-semibold">{task?.priority}</span>
+                        <TaskPriority type={task?.priority}/>
                     </div>
                     <div>
                         <button onClick={() => setCurrentTask('')}><XMarkIcon className='w-8 h-8' /></button>
@@ -94,12 +95,7 @@ function TaskInPane({ id, setCurrentTask }) {
                 </div>
             </div>
 
-            <div className="mt-4 mb-4">
-                <h2 className="text-lg font-semibold mb-4">Comments</h2>
-                <div className='flex flex-col gap-4 items-start'>
-                    <TaskComments task={task} user={user} comments={task?.comments} createComment={createComment} />
-                </div>
-            </div>
+            <TaskComments task={task} user={user} comments={task?.comments} createComment={createComment} />
         </div>
     )
 }

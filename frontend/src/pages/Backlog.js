@@ -36,9 +36,6 @@ const BacklogPage = () => {
         refetchQueries: [{ query: GET_SPRINTS_WITH_TASKS, variables: { projectId: selectedProject?.id } }]
     });
 
-
-
-
     if (loading) return <Loading />;
     if (error) return <p>Error loading sprints</p>;
     const sprints = data?.sprintsWithTasks;
@@ -59,21 +56,22 @@ const BacklogPage = () => {
         if (!destination) return;
 
         console.log(source, destination);
-        if (source?.droppableId === 'backlog') {
-            const sItem = sprints.find(s => s?.name === 'Backlog');
-            payload.taskId = sItem?.tasks[source?.index]?.id;
-            payload.newSprintId = destination?.droppableId;
-            payload.sprintId = null;
-        } else {
-            const sItem = sprints.find(s => s?.id === source?.droppableId);
-            payload.taskId = sItem?.tasks[source?.index]?.id;
-            payload.newSprintId = destination?.droppableId === 'backlog' ? null : destination?.droppableId;
-            payload.sprintId = source?.droppableId;
+        if (source?.droppableId !== destination?.droppableId) {
+            if (source?.droppableId === 'backlog') {
+                const sItem = sprints.find(s => s?.name === 'Backlog');
+                payload.taskId = sItem?.tasks[source?.index]?.id;
+                payload.newSprintId = destination?.droppableId;
+                payload.sprintId = null;
+            } else {
+                const sItem = sprints.find(s => s?.id === source?.droppableId);
+                payload.taskId = sItem?.tasks[source?.index]?.id;
+                payload.newSprintId = destination?.droppableId === 'backlog' ? null : destination?.droppableId;
+                payload.sprintId = source?.droppableId;
+            }
+            updateSprintTask({
+                variables: payload
+            })
         }
-        
-        updateSprintTask({
-            variables: payload
-        })
     }
 
     return (
@@ -85,7 +83,7 @@ const BacklogPage = () => {
                     <button className='bg-green-600 text-white px-4 py-1 rounded text-sm hover:bg-green-700' onClick={() => setIsSprintForm(true)}>Create Sprint</button>
                 </div>
                 <div className='flex flex-row gap-4'>
-                    <section className='w-full flex flex-col h-full gap-4 overflow-y-scroll'>
+                    <section className='w-full flex flex-col h-screen-minus-200 overflow-y-scroll gap-4'>
                         {isSprintForm && <SprintCard selectedProject={selectedProject} closeAction={setIsSprintForm} createSprint={createSprint} />}
                         <DragDropContext onDragEnd={onDragEnd}>
                             {
@@ -97,7 +95,7 @@ const BacklogPage = () => {
                     </section>
                     {
                         currentTask &&
-                        <aside className='w-2/5'>
+                        <aside className='w-2/5 h-screen-minus-200 overflow-y-scroll'>
                             <TaskInPane id={currentTask} setCurrentTask={setCurrentTask} />
                         </aside>
                     }

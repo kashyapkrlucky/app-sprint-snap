@@ -37,21 +37,30 @@ const TaskComments = ({ task, user, comments = [], createComment }) => {
             createComment({
                 variables: payload
             })
+            editorRef.current.innerHTML = '';
         }
     };
 
     return (
-        <>
-            <div className="w-full flex flex-col gap-4 space-y-4 mb-4">
-                {comments?.map((comment) => (
-                    <div key={comment?.id} className="border-b border-gray-200 pb-2">
-                        <div className="text-xs font-bold text-gray-500">
-                            <span>{comment?.author?.fullName}</span> - <DateFromNow value={comment?.createdAt} />
+        <div className='flex flex-col gap-4 items-start'>
+            <h2 className="text-lg font-semibold">Comments</h2>
+            <div className="w-full flex flex-col gap-4">
+                {
+                    comments?.length > 0 ? <>
+                        {comments?.map((comment) => (
+                    <div key={comment?.id} className="flex flex-col gap-4 bg-gray-50 border p-4 rounded-md">
+                        <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: comment?.content }}></div>
+                        <div className="flex flex-row justify-between text-xs text-gray-500">
+                            <span>{comment?.author?.fullName}</span> <DateFromNow value={comment?.createdAt} />
                         </div>
-                        <div className="text-gray-700">{comment?.content}</div>
                     </div>
                 ))}
+                    </> : <>
+                        <p className="bg-gray-50 border p-4 rounded-md text-xs">No Comments yet</p>
+                    </>
+                }
             </div>
+            <h2 className="text-lg font-semibold">Add Comment</h2>
             <div className="w-full border rounded-md">
                 <div className="flex flex-row border-b">
                     {buttons.map(btn => (
@@ -69,7 +78,7 @@ const TaskComments = ({ task, user, comments = [], createComment }) => {
                 <div
                     ref={editorRef}
                     contentEditable={true}
-                    className="p-4 min-h-[200px] focus:outline-none"
+                    className="p-4 min-h-[150px] focus:outline-none"
                 ></div>
 
             </div>
@@ -79,7 +88,7 @@ const TaskComments = ({ task, user, comments = [], createComment }) => {
             >
                 Submit
             </button>
-        </>
+        </div>
     );
 };
 

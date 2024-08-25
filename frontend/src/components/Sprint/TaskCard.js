@@ -1,6 +1,7 @@
 import React from 'react';
 import TaskIcon from '../Task/TaskIcon';
 import Avatar from '../../shared/Avatar';
+import TaskPriority from '../Task/TaskPriority';
 
 const TaskCard = ({ task }) => {
     return (
@@ -9,7 +10,7 @@ const TaskCard = ({ task }) => {
                 <div className='flex flex-row items-center gap-2'>
                     <TaskIcon type={task?.ticketType} />
                     <span>{task?.ticketNumber}</span>
-                    <span className="ml-2 text-sm text-yellow-500 font-semibold">{task?.priority}</span>
+                    <TaskPriority type={task?.priority}/>
                 </div>
                 <div className='py-4'>
                     {task?.title}

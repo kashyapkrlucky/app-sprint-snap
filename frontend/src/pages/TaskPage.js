@@ -11,11 +11,13 @@ import TaskStatus from '../components/Task/TaskStatus';
 import { CREATE_COMMENT, UPDATE_TASK } from '../graphql/mutations';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from '../shared/Loading';
+import TaskPriority from '../components/Task/TaskPriority';
+import TaskAssignee from '../components/Task/TaskAssignee';
 
 const TaskDescriptionPage = () => {
     const { id } = useParams();
     const { user } = useContext(AuthContext);
-    
+
     const { loading, error, data } = useQuery(GET_TASK_BY_NUMBER, {
         variables: { ticketNumber: id, skip: !id },
     });
@@ -27,7 +29,7 @@ const TaskDescriptionPage = () => {
         refetchQueries: [{ query: GET_TASK_BY_NUMBER, variables: { ticketNumber: id, skip: !id } }]
     });
 
-    if (loading) return <Loading/>;
+    if (loading) return <Loading />;
     if (error) return <p>Error loading projects in home</p>;
 
     const task = data?.taskByNumber;
@@ -41,17 +43,6 @@ const TaskDescriptionPage = () => {
         })
     }
 
-    const submitComment = (content) => {
-        const payload = {
-            content,
-            task: task?.id,
-            author: user?.id
-        }
-        createComment({
-            variables: payload
-        })
-    }
-
     return (
         <Layout>
             <div className='flex flex-row gap-6 p-4'>
@@ -60,7 +51,7 @@ const TaskDescriptionPage = () => {
                         <div className="flex flex-row items-center gap-2 text-lg font-semibold text-gray-800">
                             <TaskIcon type={task?.ticketType} />
                             <span>{task?.ticketNumber}</span>
-                            <span className="ml-2 text-sm text-yellow-500 font-semibold">{task?.priority}</span>
+                            <TaskPriority type={task?.priority}/>
                         </div>
                         <Editable type={'input'} name='title' value={task?.title} updateValue={updateValue} classes={'text-3xl font-bold text-gray-800'} />
                     </div>
@@ -78,23 +69,14 @@ const TaskDescriptionPage = () => {
 
 
                     {/* Comments Section */}
-                    <div className="mt-4 mb-4">
-                        <h2 className="text-lg font-semibold mb-4">Comments</h2>
-
-                        <div className='flex flex-col gap-4 items-start'>
-                            <TaskComments comments={task?.comments} submitComment={submitComment} />
-                        </div>
-                    </div>
+                    <TaskComments task={task} user={user} comments={task?.comments} createComment={createComment} />
                 </div>
                 <div className='w-1/4 flex flex-col gap-6 border-l p-6'>
                     <div className='flex flex-col gap-1'>
                         <h3 className='font-semibold text-sm'>People</h3>
                         <div className='flex flex-row gap-1'>
                             <span className='text-gray-600 w-24'>Assignee</span>
-                            <div className='flex flex-row'>
-                                {task?.assignee?.fullName && <span className='mr-4'>{task?.assignee?.fullName}</span>}
-                                {(task?.assignee?.id !== task?.reporter?.id) && <button className='text-blue-600'>Assign to me</button>}
-                            </div>
+                            <TaskAssignee name='assignee' value={task?.assignee} updateValue={updateValue} />
                         </div>
                         <div className='flex flex-row gap-1'>
                             <span className='text-gray-600 w-24'>Reporter</span>

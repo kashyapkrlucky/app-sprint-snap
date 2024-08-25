@@ -100,7 +100,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                                     <Moment format="DD/MM/YYYY">{now}</Moment>
                                     <span>--</span>
                                     <Moment format="DD/MM/YYYY">{twoWeeksLater}</Moment>
-                                    {sprint?.status === 'In Progress' && <div className='ml-4 text-xs font-medium trackin-widest bg-green-700 text-white rounded px-2 py-0.5'>ACTIVE</div>}
+                                    {sprint?.status === 'In Progress' && <div className='ml-4 text-xs font-medium trackin-widest bg-green-600 text-white rounded px-2 py-0.5'>ACTIVE</div>}
                                 </div>}
                             </div>
                             {sprint?.name !== 'Backlog' && <div className='flex flex-row gap-2 items-center'>

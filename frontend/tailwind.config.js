@@ -6,7 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      
+      height: {
+        'screen-minus-200': 'calc(100vh - 200px)',
+      },
     },
   },
   plugins: [],
