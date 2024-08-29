@@ -46,9 +46,10 @@ const SprintPage = () => {
   const sprint = data?.sprint;
 
   const toDo = addPoints(sprint?.tasks, 'To Do');
-  const inProgress = addPoints(sprint?.tasks, 'InProgress');
+  const inProgress = addPoints(sprint?.tasks, 'In Progress');
   const done = addPoints(sprint?.tasks, 'Done');
   const total = toDo + inProgress + done;
+console.log(toDo, inProgress, done, total);
 
   const points = {
     toDo,

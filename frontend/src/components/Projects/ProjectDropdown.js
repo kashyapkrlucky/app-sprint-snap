@@ -1,8 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_PROJECTS } from "../../graphql/queries"; // GraphQL query to get the projects
-import CreateProject from "./CreateProject";
-import Modal from "../../shared/Modal";
+import { GET_PROJECTS } from "../../graphql/queries";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useAppSelection } from "../../contexts/AppSelectionContext";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -10,7 +8,6 @@ import { AuthContext } from "../../contexts/AuthContext";
 const ProjectDropdown = () => {
   const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { selectedProject, setSelectedProject } = useAppSelection();
   
   // Fetch projects from backend using GraphQL
@@ -30,11 +27,6 @@ const ProjectDropdown = () => {
     setIsOpen(false);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setIsOpen(false);
-  }
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading projects in dropdown</p>;
 
@@ -43,7 +35,7 @@ const ProjectDropdown = () => {
       {/* Dropdown Toggle Button */}
       <button
         onClick={toggleDropdown}
-        className="bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center"
+        className="bg-gray-100 font-bold px-4 py-2 rounded-lg flex items-center"
       >
         {selectedProject?.name || "Select Project"}
         <ChevronDownIcon className="w-4 h-4 ml-2" />
@@ -62,24 +54,9 @@ const ProjectDropdown = () => {
                 {project?.name}
               </li>
             ))}
-            <li>
-              <button
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setIsOpen(false);
-                }}
-                className="w-full text-left p-2 text-blue-600 hover:bg-gray-100"
-              >
-                + Add Project
-              </button>
-            </li>
           </ul>
         </div>
       )}
-
-      <Modal title={'Create Project'} isOpen={isModalOpen} onClose={() => { closeModal() }}>
-        <CreateProject closeModal={closeModal} />
-      </Modal>
     </div>
   );
 };

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Assuming you're using React Router
 
-import { ArrowLeftCircleIcon, ArrowRightCircleIcon, ChartBarSquareIcon, Cog8ToothIcon, QueueListIcon, RectangleGroupIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftCircleIcon, ArrowRightCircleIcon, ChartBarSquareIcon, Cog8ToothIcon, QueueListIcon, RectangleGroupIcon, Square2StackIcon, Square3Stack3DIcon } from '@heroicons/react/24/outline';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false); // State to toggle sidebar
@@ -35,6 +35,11 @@ const Sidebar = () => {
 
                 <Link to="/charts" className="flex flex-row gap-2 items-center py-2 px-3 hover:bg-gray-700 transition-colors rounded-lg">
                     <ChartBarSquareIcon className='w-6 h-6' />
+                    <span className={`text-sm ${isOpen ? 'block' : 'hidden'}`}>Charts</span>
+                </Link>
+
+                <Link to="/projects" className="flex flex-row gap-2 items-center py-2 px-3 hover:bg-gray-700 transition-colors rounded-lg">
+                    <Square3Stack3DIcon className='w-6 h-6' />
                     <span className={`text-sm ${isOpen ? 'block' : 'hidden'}`}>Charts</span>
                 </Link>
             </nav>

@@ -67,7 +67,7 @@ function TaskInPane({ id, setCurrentTask }) {
             </div>
             <div className="flex flex-col gap-2">
                 <h4 className='font-bold'>Description</h4>
-                <Editable type={'textarea'} name='description' classes={'text-sm text-gray-500'} value={task?.description} updateValue={updateValue} />
+                <Editable type={'textarea'} name='description' classes={'text-base'} value={task?.description} updateValue={updateValue} />
             </div>
             <div className='flex flex-col gap-1'>
                 <h3 className='font-semibold text-xs'>People</h3>
