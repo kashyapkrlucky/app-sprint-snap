@@ -1,42 +1,21 @@
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import React, { useEffect, useState } from 'react'
 import TaskItem from './TaskItem';
 import Moment from 'react-moment';
 import moment from 'moment';
 import Modal from '../../shared/Modal';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { useAppSelection } from '../../contexts/AppSelectionContext';
 
-function SprintCard({ sprint, selectedProject, closeAction, updateSprint, createSprint, activeSprint, setCurrentTask, futureSprints, completeSprint }) {
-    const [sprintName, setSprintName] = useState('');
-
+function SprintCard({ sprint, updateSprint, activeSprint, setCurrentTask, futureSprints, completeSprint }) {
     const now = moment(); // Get current date and time
-    const twoWeeksLater = moment().add(14, 'days'); // Add 14 days to the current date
+    const twoWeeksLater = moment().add(5, 'days'); // Add 14 days to the current date
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newSprintId, setNewSprintId] = useState('')
 
     const [donePoints, setDonePoints] = useState(0);
     const [pendingPoints, setPendingPoints] = useState(0);
     const [pendingTickets, setPendingTickets] = useState([]);
-
-    const onSubmit = () => {
-        createSprint({
-            variables: {
-                name: sprintName,
-                projectId: selectedProject?.id
-            }
-        })
-        setSprintName('');
-        closeAction();
-    }
-
-    // const onDragEnd = (result) => {
-    //     const { destination, source } = result;
-
-    //     if (!destination) return;
-
-    //     console.log(source, destination);
-
-    // }
+    const { setSelectedSprint } = useAppSelection();
 
     useEffect(() => {
         const addPoints = (tasks, type) => {
@@ -63,10 +42,12 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
         if (status === 'In Progress') {
             payload.startDate = now.format();
             payload.endDate = twoWeeksLater.format();
+            setSelectedSprint(sprint?.id);
         }
         if (status === 'Complete Sprint') {
             payload.endDate = twoWeeksLater.format();
             payload.nextSprint = '';
+            setSelectedSprint(null);
         }
         updateSprint({
             variables: payload
@@ -75,6 +56,14 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
 
     const onSelectTask = id => {
         setCurrentTask(id);
+    }
+
+    const isPendingTasks = () => {
+        if(pendingTickets.length > 0) {
+            setIsModalOpen(true)
+        } else {
+            onCompleteSprint();
+        }
     }
 
     const onCompleteSprint = () => {
@@ -92,11 +81,11 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
         <div className='flex flex-col gap-2 bg-gray-100 border p-4 rounded-md'>
             <div className='flex flex-row gap-2'>
                 {
-                    sprint ?
+                    sprint &&
                         <div className='w-full flex flex-row justify-between items-center'>
                             <div className='flex flex-col gap-2'>
                                 <div className='text-sm lg:text-lg font-semibold capitalize'>{sprint?.name}</div>
-                                {!['Not Started'].includes(sprint?.status) && <div className='flex flex-row items-center gap-1 text-xs lg:text-sm capitalize'>
+                                {!['Not Started'].includes(sprint?.status) && sprint?.name !== 'Backlog' && <div className='flex flex-row items-center gap-1 text-xs lg:text-sm capitalize'>
                                     <Moment format="DD/MM/YYYY">{now}</Moment>
                                     <span>--</span>
                                     <Moment format="DD/MM/YYYY">{twoWeeksLater}</Moment>
@@ -115,7 +104,7 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
 
                                             {
                                                 sprint?.status === 'In Progress' &&
-                                                <button className='bg-blue-500 text-white px-4 py-1 text-sm rounded' onClick={() => setIsModalOpen(true)}>Complete Sprint</button>
+                                                <button className='bg-blue-500 text-white px-4 py-1 text-sm rounded' onClick={() => isPendingTasks()}>Complete Sprint</button>
                                             }
                                         </>}
                                     </> : <>
@@ -131,15 +120,6 @@ function SprintCard({ sprint, selectedProject, closeAction, updateSprint, create
                                     <div className='border bg-white px-4 py-1 text-sm rounded-md'>Completed</div>
                                 }
                             </div>}
-                        </div> :
-                        <div className='flex flex-row'>
-                            <input type='text' placeholder='Sprint Name' className='px-4 py-1 rounded-md border-2' onChange={(e) => setSprintName(e.target.value)} />
-                            <button onClick={onSubmit}>
-                                <CheckCircleIcon className='w-8 h-8' />
-                            </button>
-                            <button onClick={() => closeAction()}>
-                                <XCircleIcon className='w-8 h-8' />
-                            </button>
                         </div>
                 }
             </div>

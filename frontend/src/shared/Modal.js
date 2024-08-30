@@ -33,7 +33,7 @@ const Modal = ({ title, isOpen, onClose, children }) => {
     return (
         <Portal>
             <div className="modal-overlay fixed top-0 left-0 bottom-0 right-0 flex flex-row justify-center items-center">
-                <div className="modal-content bg-white p-4 rounded-xl my-4 lg:w-1/2" ref={modalRef}>
+                <div className="modal-content bg-white p-4 rounded-xl my-4" ref={modalRef}>
                     <header className='w-full flex flex-row justify-between items-center border-b pb-4'>
                         <p className='text-lg font-semibold text-gray-500 capitalize'>{title}</p>
                         <button
@@ -44,7 +44,7 @@ const Modal = ({ title, isOpen, onClose, children }) => {
                             <XCircleIcon className='w-10 h-10 text-gray-500 hover:text-gray-700' />
                         </button>
                     </header>
-                    <section className='mt-4  h-auto overflow-y-scroll' style={{ maxHeight: '580px' }}>
+                    <section className='mt-4 w-auto h-auto overflow-y-scroll' style={{ maxHeight: '580px' }}>
                         {children}
                     </section>
                 </div>

@@ -46,23 +46,23 @@ function UpdatePicture() {
     return (
         <div className='flex flex-col'>
             <div className='flex flex-row items-center gap-6 p-4 rounded-xl'>
-                <Avatar user={user} size='lg'/>
+                <Avatar user={user} size='lg' />
                 <button className='shadow-sm bg-white rounded-md px-4 py-2' onClick={() => setIsEditorOpen(true)} >Change</button>
             </div>
 
             <Modal title={'Choose Picture'} isOpen={isEditorOpen} onClose={() => { setIsEditorOpen(false); setCurrentImg(''); }}>
-                <div className='w-full grid grid-cols-4 lg:grid-cols-8 flex-wrap p-4 gap-2 overflow-y-auto border-b-2 border-slate-100'>
-                    {
-                        Avatars.map((item, index) => (
-                            <div key={index} className={"rounded-full border-4 " + getCurrentImgStyle(item)} onClick={() => setCurrentImg(item.url)}>
-                                <img className='rounded-full' src={`/avatars/${item.url}`} alt={index} />
-                            </div>
-                        ))
-                    }
-                </div>
-                <div className='flex flex-row justify-end p-4'>
-                    <button className='bg-blue-600 rounded-md text-white px-4 py-1' onClick={onUpdate}>Update</button>
-                </div>
+                    <div className='w-1/2 grid grid-cols-4 lg:grid-cols-8 flex-wrap p-4 gap-2 overflow-y-auto border-b-2 border-slate-100'>
+                        {
+                            Avatars.map((item, index) => (
+                                <div key={index} className={"rounded-full border-4 " + getCurrentImgStyle(item)} onClick={() => setCurrentImg(item.url)}>
+                                    <img className='rounded-full' src={`/avatars/${item.url}`} alt={index} />
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <div className='flex flex-row justify-end p-4'>
+                        <button className='bg-blue-600 rounded-md text-white px-4 py-1' onClick={onUpdate}>Update</button>
+                    </div>
             </Modal>
 
         </div>

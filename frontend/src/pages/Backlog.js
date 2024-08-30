@@ -8,11 +8,13 @@ import { COMPLETE_SPRINT, CREATE_SPRINT, UPDATE_SPRINT, UPDATE_SPRINT_TASK } fro
 import TaskInPane from '../components/Backlog/TaskInPane';
 import Loading from '../shared/Loading';
 import { DragDropContext } from 'react-beautiful-dnd';
+import Modal from '../shared/Modal';
+import CreateSprint from '../components/Sprint/CreateSprint';
 
 const BacklogPage = () => {
 
     const { selectedProject } = useAppSelection();
-    const [isSprintForm, setIsSprintForm] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentTask, setCurrentTask] = useState('');
 
     if (!selectedProject) { <p>test</p> };
@@ -55,7 +57,6 @@ const BacklogPage = () => {
         }
         if (!destination) return;
 
-        console.log(source, destination);
         if (source?.droppableId !== destination?.droppableId) {
             if (source?.droppableId === 'backlog') {
                 const sItem = sprints.find(s => s?.name === 'Backlog');
@@ -80,11 +81,10 @@ const BacklogPage = () => {
                 {/* Header Section */}
                 <div className="py-4 flex justify-start items-center gap-4">
                     <h1 className="text-2xl font-bold text-gray-700">{selectedProject?.name}</h1>
-                    <button className='bg-green-600 text-white px-4 py-1 rounded text-sm hover:bg-green-700' onClick={() => setIsSprintForm(true)}>Create Sprint</button>
+                    <button className='bg-green-600 text-white px-4 py-1 rounded text-sm hover:bg-green-700' onClick={() => setIsModalOpen(true)}>Create Sprint</button>
                 </div>
                 <div className='flex flex-row gap-4'>
                     <section className='w-full flex flex-col h-screen-minus-200 overflow-y-scroll gap-4'>
-                        {isSprintForm && <SprintCard selectedProject={selectedProject} closeAction={setIsSprintForm} createSprint={createSprint} />}
                         <DragDropContext onDragEnd={onDragEnd}>
                             {
                                 sprints?.map(sprint => (
@@ -99,9 +99,11 @@ const BacklogPage = () => {
                             <TaskInPane id={currentTask} setCurrentTask={setCurrentTask} />
                         </aside>
                     }
-
                 </div>
             </div>
+            <Modal title={`Create Sprint`} isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); }}>
+                <CreateSprint createSprint={createSprint} projectId={selectedProject?.id} modalAction={setIsModalOpen}/>
+            </Modal>
         </Layout>
     );
 };

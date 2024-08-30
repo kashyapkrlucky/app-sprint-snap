@@ -143,7 +143,7 @@ export const UPDATE_SPRINT = gql`
   }
 `
 export const COMPLETE_SPRINT = gql`
-  mutation CompleteSprint($sprintId: ID!, $newSprintId: ID!, $taskIds: [ID]) {
+  mutation CompleteSprint($sprintId: ID!, $newSprintId: ID, $taskIds: [ID]) {
     completeSprint(sprintId: $sprintId, newSprintId: $newSprintId, taskIds: $taskIds)
   }
 `

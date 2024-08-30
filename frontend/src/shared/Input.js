@@ -1,7 +1,7 @@
 // components/Input.js
 import React from 'react';
 
-const Input = ({ type = 'text', placeholder, value, onChange, size = 'md', disabled = false }) => {
+const Input = ({ type = 'text', placeholder, name, value, onChange, size = 'md', disabled = false }) => {
     const baseStyle = 'block w-full rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out';
 
     const sizeStyles = {
@@ -16,6 +16,7 @@ const Input = ({ type = 'text', placeholder, value, onChange, size = 'md', disab
             placeholder={placeholder}
             value={value}
             onChange={onChange}
+            name={name}
             className={`${baseStyle} ${sizeStyles[size]} ${disabled ? 'bg-gray-200 cursor-not-allowed' : ''}`}
             disabled={disabled}
         />
