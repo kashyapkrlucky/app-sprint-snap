@@ -78,11 +78,6 @@ const BacklogPage = () => {
     return (
         <Layout>
             <div className='w-full p-4 flex flex-col gap-4'>
-                {/* Header Section */}
-                <div className="py-4 flex justify-start items-center gap-4">
-                    <h1 className="text-2xl font-bold text-gray-700">{selectedProject?.name}</h1>
-                    <button className='bg-green-600 text-white px-4 py-1 rounded text-sm hover:bg-green-700' onClick={() => setIsModalOpen(true)}>Create Sprint</button>
-                </div>
                 <div className='flex flex-row gap-4'>
                     <section className='w-full flex flex-col h-screen-minus-200 overflow-y-scroll gap-4'>
                         <DragDropContext onDragEnd={onDragEnd}>
@@ -102,7 +97,7 @@ const BacklogPage = () => {
                 </div>
             </div>
             <Modal title={`Create Sprint`} isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); }}>
-                <CreateSprint createSprint={createSprint} projectId={selectedProject?.id} modalAction={setIsModalOpen}/>
+                <CreateSprint createSprint={createSprint} projectId={selectedProject?.id} modalAction={setIsModalOpen} />
             </Modal>
         </Layout>
     );
