@@ -5,21 +5,13 @@ import Modal from '../shared/Modal';
 import { AuthContext } from '../contexts/AuthContext';
 import UpdatePicture from '../components/Profile/UpdatePicture';
 
-
 function Profile() {
   const { user, updateUser } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <Layout>
-      <header>
-
-
-
-
-      </header>
+      <header></header>
       <section className='w-1/3 p-4'>
-
-
         <UpdatePicture />
         <div className="px-4 sm:px-0">
           <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Personal details and application.</p>
