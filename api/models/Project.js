@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+/**
+ * Project Schema
+ */
 const projectSchema = new Schema(
   {
-    name: { type: String, required: true },
-    description: { type: String },
+    name: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
     startDate: { type: Date, default: Date.now },
     endDate: { type: Date },
     status: {
@@ -13,11 +16,10 @@ const projectSchema = new Schema(
       default: "Not Started",
     },
     members: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
     notifications: [{ type: Schema.Types.ObjectId, ref: "Notification" }],
-    initials: { type: String },
+    initials: { type: String, trim: true },
     ticketCount: { type: Number, default: 0 },
-    activeSprint: { type: Schema.Types.ObjectId },
+    activeSprint: { type: Schema.Types.ObjectId, ref: "Sprint" }, // added ref for clarity
   },
   { timestamps: true }
 );
